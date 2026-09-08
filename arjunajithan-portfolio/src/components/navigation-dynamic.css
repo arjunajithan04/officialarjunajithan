@@ -1,0 +1,305 @@
+/* ============================================================
+   DYNAMIC NAVIGATION — FIXED / SELF-CONTAINED
+============================================================ */
+
+.site-navigation.dynamic-navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 15px 35px;
+  color: #111111;
+  pointer-events: none;
+  mix-blend-mode: normal;
+  box-sizing: border-box;
+  transition:
+    width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.55s ease,
+    border-radius 0.55s ease;
+}
+
+.site-navigation.dynamic-navigation > * {
+  pointer-events: auto;
+}
+
+.site-navigation.dynamic-navigation .dynamic-desktop-nav,
+.site-navigation.dynamic-navigation .dynamic-nav-status {
+  mix-blend-mode: normal;
+}
+
+.dynamic-nav-logo {
+  mix-blend-mode: normal;
+  isolation: isolate;
+}
+
+.dynamic-nav-logo-image {
+  mix-blend-mode: normal;
+  filter: none;
+}
+
+.site-navigation.dynamic-navigation.is-scrolled {
+  top: 0;
+  left: 50%;
+  width: max-content;
+  min-height: 0;
+  padding: 8px 11px;
+  gap: 15px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 999px;
+  background: rgba(17,17,17,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  mix-blend-mode: normal;
+  color: #f3f1ed;
+}
+
+.dynamic-nav-logo {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.08em;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dynamic-navigation.is-scrolled .dynamic-nav-logo {
+  width: 34px;
+  height: 34px;
+  font-size: 9px;
+}
+
+.dynamic-desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.dynamic-nav-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+}
+
+.dynamic-nav-item {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 999px;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.035em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: opacity 0.25s ease, color 0.25s ease;
+}
+
+.dynamic-navigation:not(.is-scrolled) .dynamic-nav-item { color: #111111; }
+.dynamic-nav-item:hover { opacity: 0.7; }
+.dynamic-nav-item:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
+
+.dynamic-nav-item.active {
+  color: #111111;
+  font-weight: 800;
+  opacity: 1;
+}
+.dynamic-navigation.is-scrolled .dynamic-nav-item.active {
+  color: #111111;
+  font-weight: 800;
+  opacity: 1;
+}
+
+.dynamic-nav-active-pill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.dynamic-navigation:not(.is-scrolled) .dynamic-nav-active-pill {
+  background: rgba(17, 17, 17, 0.08);
+  border-color: rgba(17, 17, 17, 0.22);
+}
+
+.dynamic-nav-number {
+  position: relative;
+  z-index: 1;
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  letter-spacing: 0;
+  opacity: 0.5;
+}
+.dynamic-nav-item.active .dynamic-nav-number {
+  opacity: 0.9;
+}
+
+.dynamic-nav-label { position: relative; z-index: 1; }
+
+.dynamic-nav-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 112px;
+  color: inherit;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0.72;
+}
+
+.dynamic-nav-status-dot {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: dynamic-nav-pulse 1.8s ease-in-out infinite;
+}
+
+.dynamic-navigation:not(.is-scrolled) .dynamic-nav-status { color: #111111; }
+
+@keyframes dynamic-nav-pulse {
+  0%,100% { transform: scale(.7); opacity: .35; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+.dynamic-mobile-button { display: none; }
+
+.dynamic-mobile-navigation { z-index: 998; }
+.dynamic-mobile-inner { padding-top: 125px; }
+.dynamic-mobile-inner .mobile-nav-links button { position: relative; }
+.dynamic-mobile-inner .mobile-nav-links button svg { margin-left: 10px; }
+
+@media (max-width: 700px) {
+  .site-navigation.dynamic-navigation {
+    min-height: 0;
+    padding: 18px 20px;
+    color: #111111;
+    mix-blend-mode: normal;
+  }
+
+  .dynamic-desktop-nav,
+  .dynamic-nav-status { display: none; }
+
+  .dynamic-mobile-button {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  .site-navigation.dynamic-navigation.is-scrolled {
+    left: 10px;
+    right: 10px;
+    width: auto;
+    padding: 7px 9px;
+    transform: none;
+    justify-content: space-between;
+    mix-blend-mode: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dynamic-nav-status-dot { animation: none; }
+}
+
+/* ============================================================
+   NAVIGATION — CUSTOM IMAGE LOGO
+============================================================ */
+
+.dynamic-nav-logo {
+  overflow: hidden;
+  padding: 0;
+}
+
+.dynamic-nav-logo-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 50%;
+  mix-blend-mode: normal;
+  filter: none;
+}
+
+/* Scrolled / compact navigation */
+.dynamic-navigation.is-scrolled .dynamic-nav-logo-image {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ============================================================
+   SCROLLED NAV — FORCE CONSISTENT WHITE TEXT
+============================================================ */
+
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-item,
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-label,
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-number {
+  color: #ffffff !important;
+}
+
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-item.active {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-number {
+  opacity: 0.55;
+}
+
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-item.active .dynamic-nav-number {
+  opacity: 0.95;
+}
+
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-status {
+  color: #ffffff !important;
+}
+
+.site-navigation.dynamic-navigation.is-scrolled .dynamic-nav-logo {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.45);
+}

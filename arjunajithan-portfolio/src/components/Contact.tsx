@@ -1,157 +1,372 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import { useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowUpRight,
+  Check,
+  Copy,
+} from "lucide-react";
+import { useState } from "react";
+
+const email = "arjunajithan04@gmail.com";
+
+const socials = [
+  {
+    number: "01",
+    label: "LinkedIn",
+    description: "Let's connect professionally.",
+    meta: "NETWORK / PROFESSIONAL",
+    href: "https://www.linkedin.com/in/arjunajithan",
+    icon: "/images/in.svg",
+    iconAlt: "LinkedIn",
+  },
+  {
+    number: "02",
+    label: "GitHub",
+    description: "Check out my work.",
+    meta: "CODE / PROJECTS",
+    href: "https://github.com/arjunajithan04",
+    icon: "/images/gh.svg",
+    iconAlt: "GitHub",
+  },
+];
+
+const contactEase = [0.22, 1, 0.36, 1] as const;
+
 
 const Contact = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const [copied, setCopied] = useState(false);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-
-  const titleX = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["8%", "-5%"]
-  );
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.location.href = `mailto:${email}`;
+    }
+  };
 
   return (
-    <section
-      ref={sectionRef}
-      id="contact"
-      className="contact-section"
-    >
-      <div className="contact-container">
-
-        {/* TOP */}
-        <div className="contact-top">
+    <section id="contact" className="contact-v3">
+      <div className="contact-v3-shell">
+        <motion.div
+          className="contact-v3-top"
+          initial={{ opacity: 0, y: -18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.4 }}
+          transition={{ duration: 0.65, ease: contactEase }}
+        >
           <span>06 / CONTACT</span>
-          <span>LET'S BUILD SOMETHING</span>
+          <span className="contact-v3-flow">
+            IDEAS <i>→</i> PEOPLE <i>→</i> OPPORTUNITIES
+          </span>
+          <span className="contact-v3-top-right">
+            OPEN TO GOOD CONVERSATIONS
+          </span>
+        </motion.div>
+
+        <div className="contact-v3-hero">
+          <motion.div
+            className="contact-v3-title"
+            initial={{ opacity: 0, y: 80 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{
+              duration: 0.95,
+              ease: contactEase,
+            }}
+          >
+            <span className="contact-v3-title-solid">LET&apos;S</span>
+            <span className="contact-v3-title-outline">TALK.</span>
+
+            <div className="contact-v3-side-note">
+              SAME
+              <br />
+              IDEAS.
+              <br />
+              BIGGER
+              <br />
+              POSSIBILITIES.
+              <span />
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="contact-v3-intro"
+            initial={{ opacity: 0, x: 35 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.14,
+              ease: contactEase,
+            }}
+          >
+            <p className="contact-v3-lead">
+              Have an idea, opportunity or simply something worth discussing?
+              I&apos;m always interested in hearing what you&apos;re working on.
+            </p>
+
+            <p>
+              Whether it&apos;s software, web, emerging technology or a problem
+              that needs a different perspective — let&apos;s start with a
+              conversation.
+            </p>
+
+            <div className="contact-v3-tags">
+              <span>[ OPPORTUNITIES ]</span>
+              <span>[ COLLABORATIONS ]</span>
+              <span>[ RANDOM IDEAS ]</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="contact-v3-portrait"
+            initial={{ opacity: 0, scale: 1.04 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 1.05, delay: 0.08, ease: contactEase }}
+          >
+            <div className="contact-v3-noise" />
+            <div className="contact-v3-building">
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+
+            <div className="contact-v3-portrait-copy top">
+              GOOD
+              <br />
+              IDEAS
+              <br />
+              FIND
+              <br />
+              PEOPLE.
+              <br />
+              <em>—</em>
+            </div>
+
+            <div className="contact-v3-portrait-copy bottom">
+              LET&apos;S
+              <br />
+              BUILD
+              <br />
+              SOMETHING
+              <br />
+              GREAT.
+              <br />
+              <em>—</em>
+            </div>
+          </motion.div>
         </div>
 
-        {/* MAIN TITLE */}
-        <div className="contact-heading-wrapper">
-          <motion.h2 style={{ x: titleX }}>
-            LET'S
-            <span>TALK.</span>
-          </motion.h2>
-        </div>
-
-        {/* INTRO */}
-        <div className="contact-intro">
-          <p>
-            Have an idea, project or opportunity
-            you'd like to discuss?
-          </p>
-
-          <p>
-            I'm always interested in meeting people,
-            exploring ideas and building something
-            meaningful.
-          </p>
-        </div>
-
-        {/* EMAIL */}
-        <div className="contact-email">
-          <span>GET IN TOUCH</span>
-
-          <a href="mailto:arjunajithan04@gmail.com">
-            arjunajithan04@gmail.com
-            <ArrowUpRight size={24} />
-          </a>
-        </div>
-
-        {/* SOCIAL LINKS */}
-        <div className="contact-links">
-
-          <ContactLink
-            number="01"
-            label="GITHUB"
-            href="https://github.com/arjunajithan04"
-          />
-
-          <ContactLink
-            number="02"
-            label="LINKEDIN"
-            href="https://www.linkedin.com/in/arjunajithan"
-          />
-
-          <ContactLink
-            number="03"
-            label="INSTAGRAM"
-            href="https://www.instagram.com/arjunajithan"
-          />
-
-        </div>
-
-        {/* FOOTER */}
-        <footer className="contact-footer">
-
-          <div>
-            <span>ARJUN AJITHAN</span>
-            <span>PORTFOLIO — 2026</span>
+        <motion.div
+          className="contact-v3-direct"
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.05, ease: contactEase }}
+        >
+          <div className="contact-v3-direct-label">
+            <span>01 / DIRECT LINE</span>
+            <span className="contact-v3-availability">
+              <i />
+              AVAILABLE
+              <br />
+              FOR OPPORTUNITIES
+            </span>
           </div>
 
-          <div>
-            <span>MADE WITH CURIOSITY</span>
-            <span>© 2026</span>
+          <div className="contact-v3-email-row">
+            <a href={`mailto:${email}`} className="contact-v3-email">
+              {email}
+            </a>
+
+            <div className="contact-v3-email-actions">
+              <a
+                href={`mailto:${email}`}
+                className="contact-v3-send"
+                aria-label="Send an email"
+              >
+                <ArrowUpRight size={25} strokeWidth={1.5} />
+                <span>SEND MAIL</span>
+              </a>
+
+              <button
+                type="button"
+                className="contact-v3-copy"
+                onClick={copyEmail}
+                aria-label={copied ? "Email copied" : "Copy email address"}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {copied ? (
+                    <motion.span
+                      key="done"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                    >
+                      <Check size={19} />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="copy"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                    >
+                      <Copy size={19} />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
           </div>
 
-        </footer>
+          <div className="contact-v3-direct-bottom">
+            <span>DROP A MAIL. ANYTIME.</span>
+            <span>FASTEST WAY TO REACH ME.</span>
+          </div>
+        </motion.div>
 
+        <div className="contact-v3-elsewhere">
+          <motion.div
+            className="contact-v3-section-label"
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.35 }}
+            transition={{ duration: 0.65, ease: contactEase }}
+          >
+            <span>02 / ELSEWHERE</span>
+            <span>FIND ME AROUND THE WEB</span>
+          </motion.div>
+
+          <div className="contact-v3-elsewhere-grid">
+            <div className="contact-v3-socials">
+              {socials.map((social, index) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="contact-v3-social"
+                  initial={{ opacity: 0, y: 38, scale: 0.985 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: false, amount: 0.18 }}
+                  transition={{
+                    duration: 0.72,
+                    delay: index * 0.11,
+                    ease: contactEase,
+                  }}
+                >
+                  <span className="contact-v3-social-number">
+                    {social.number}
+                  </span>
+
+                  <span className="contact-v3-social-icon">
+                    <img
+                      src={social.icon}
+                      alt={social.iconAlt}
+                    />
+                  </span>
+
+                  <span className="contact-v3-social-copy">
+                    <strong>{social.label}</strong>
+                    <small>{social.description}</small>
+                  </span>
+
+                  <span className="contact-v3-social-meta">
+                    {social.meta}
+                  </span>
+
+                  <ArrowUpRight
+                    className="contact-v3-social-arrow"
+                    size={25}
+                    strokeWidth={1.5}
+                  />
+                </motion.a>
+              ))}
+            </div>
+
+            <motion.div
+              className="contact-v3-info-visual"
+              initial={{ opacity: 0, y: 34, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.16, ease: contactEase }}
+            >
+              <div className="contact-v3-mini-building">
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+
+              <div className="contact-v3-mini-copy">
+                TECH
+                <br />
+                PEOPLE
+                <br />
+                IDEAS
+                <br />
+                IMPACT
+                <br />
+                <em>—</em>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="contact-v3-facts"
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.72, delay: 0.24, ease: contactEase }}
+            >
+              <span>INDIA / IST</span>
+              <span>MCA STUDENT</span>
+              <span>DEVELOPER</span>
+              <span>BUILDER</span>
+            </motion.div>
+          </div>
+        </div>
+
+        <motion.div
+          className="contact-v3-closing"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.25 }}
+          transition={{ duration: 0.85, ease: contactEase }}
+        >
+          <div className="contact-v3-closing-main">
+            <ArrowUpRight size={17} strokeWidth={1.5} />
+            <strong>
+              THE NEXT GOOD IDEA
+              <br />
+              COULD START HERE.
+            </strong>
+          </div>
+
+          <div className="contact-v3-closing-line" />
+          <span>[ LET&apos;S CREATE WHAT&apos;S NEXT ]</span>
+          <div className="contact-v3-closing-line short" />
+          <span className="contact-v3-closing-mark">AA</span>
+        </motion.div>
+
+        <motion.div
+          className="contact-v3-footer"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.35 }}
+          transition={{ duration: 0.65, delay: 0.08, ease: contactEase }}
+        >
+          <span>© 2026 ARJUN AJITHAN NADUKANDIYIL</span>
+          <span>BUILT WITH REACT ↗</span>
+          <span>06 / 06</span>
+        </motion.div>
       </div>
     </section>
   );
 };
-
-
-interface ContactLinkProps {
-  number: string;
-  label: string;
-  href: string;
-}
-
-
-const ContactLink = ({
-  number,
-  label,
-  href,
-}: ContactLinkProps) => {
-
-  return (
-    <motion.a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="contact-link"
-      whileHover="hover"
-    >
-
-      <span className="contact-link-number">
-        {number}
-      </span>
-
-      <span className="contact-link-label">
-        {label}
-      </span>
-
-      <motion.span
-        className="contact-link-arrow"
-        variants={{
-          hover: {
-            x: 8,
-            y: -8,
-            rotate: -10,
-          },
-        }}
-      >
-        ↗
-      </motion.span>
-
-    </motion.a>
-  );
-};
-
 
 export default Contact;

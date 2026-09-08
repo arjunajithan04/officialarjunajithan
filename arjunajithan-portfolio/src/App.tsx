@@ -1,6 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 
 import Cursor from "./components/Cursor";
+import SmartCursor from "./components/SmartCursor";
+import ScrollProgress from "./components/ScrollProgress";
+import SectionTransition from "./components/SectionTransition";
 import SmoothScroll from "./components/SmoothScroll";
 import Hero from "./components/Hero";
 import Projects from "./components/Projects";
@@ -14,6 +17,9 @@ function App() {
   return (
     <SmoothScroll>
       <Cursor />
+      <ScrollProgress />
+      <SectionTransition />
+      <SmartCursor />
       <Navigation />
 
       <main className="portfolio">
@@ -36,14 +42,6 @@ function App() {
         <Contact />
 
         {/* ================= FOOTER ================= */}
-        <footer>
-          <span>© 2026 ARJUN AJITHAN</span>
-
-          <span>
-            BUILT WITH REACT{" "}
-            <ArrowUpRight size={14} />
-          </span>
-        </footer>
       </main>
     </SmoothScroll>
   );

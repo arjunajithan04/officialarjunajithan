@@ -1,0 +1,71 @@
+/* ============================================================
+   CINEMATIC SECTION TRANSITIONS
+   Editorial movement layer — subtle, non-blocking.
+============================================================ */
+
+.section-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+}
+
+.section-transition-wipe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: #111111;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.section-transition-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #111111;
+  transform-origin: left center;
+  opacity: 0.55;
+}
+
+.section-transition-label {
+  position: absolute;
+  right: 4vw;
+  bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #111111;
+  opacity: 0.58;
+  transition: opacity 0.25s ease;
+}
+
+.section-transition-label > span:first-child {
+  opacity: 0.48;
+}
+
+.section-transition-label.is-transitioning {
+  opacity: 0.95;
+}
+
+@media (max-width: 700px) {
+  .section-transition-label {
+    right: 20px;
+    bottom: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-transition-wipe {
+    display: none;
+  }
+}

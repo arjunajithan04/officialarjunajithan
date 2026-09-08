@@ -1,0 +1,45 @@
+/* ============================================================
+   SCROLL PROGRESS
+   High-contrast editorial progress rail
+============================================================ */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: #111111;
+  z-index: 10001;
+  pointer-events: none;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.scroll-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #f2f2ee;
+  transform: scaleX(1);
+  transform-origin: 100% 50%;
+  z-index: -1;
+}
+
+/*
+  The bar itself is dark. On the light portfolio background
+  it remains visible throughout the page. The stronger height
+  and subtle highlight make it readable even at a glance.
+*/
+
+@media (max-width: 700px) {
+  .scroll-progress {
+    height: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress {
+    transition: none;
+  }
+}
