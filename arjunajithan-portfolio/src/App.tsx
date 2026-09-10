@@ -1,5 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
-
+import AdminApp from "./AdminApp";
 import Cursor from "./components/Cursor";
 import SmartCursor from "./components/SmartCursor";
 import ScrollProgress from "./components/ScrollProgress";
@@ -14,6 +13,15 @@ import Contact from "./components/Contact";
 import Navigation from "./components/Navigation";
 
 function App() {
+  //Admin route handling
+  if (
+  window.location.pathname === "/admin" ||
+  window.location.pathname === "/admin/login"
+  ) {
+    return <AdminApp />;
+  }
+
+  //Main app rendering
   return (
     <SmoothScroll>
       <Cursor />

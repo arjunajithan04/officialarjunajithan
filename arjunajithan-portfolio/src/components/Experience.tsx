@@ -1,8 +1,24 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+
+interface DatabaseExperience {
+  id: string;
+  company: string;
+  role: string;
+  location: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  is_current: boolean;
+  summary: string | null;
+  description: string | null;
+  tags: string[] | null;
+  sort_order: number;
+}
 
 interface Experience {
+  id: string;
   number: string;
   year: string;
   period: string;
@@ -14,63 +30,94 @@ interface Experience {
   tags: string[];
 }
 
-const experiences: Experience[] = [
-  {
-    number: "01",
-    year: "2026",
-    period: "SEP — OCT 2026",
-    company: "Hope Foundation",
-    role: "AI with Python Intern",
-    location: "India",
-    summary: "AI and Python internship experience.",
-    details:
-      "An AI-focused internship where Python forms the practical foundation for working with programming, data and machine-learning concepts.",
-    tags: ["Python", "Artificial Intelligence", "Machine Learning", "Data"],
-  },
-  {
-    number: "02",
-    year: "2025",
-    period: "JUL — SEP 2025",
-    company: "Mannai Corporation",
-    role: "Networking Intern",
-    location: "Doha, Qatar",
-    summary:
-      "Exposure to network performance monitoring, connectivity troubleshooting and enterprise IT infrastructure operations.",
-    details:
-      "Worked around the operational side of enterprise networking, gaining practical exposure to network performance monitoring, connectivity troubleshooting and day-to-day IT infrastructure.",
-    tags: [
-      "Enterprise Networking",
-      "Network Monitoring",
-      "Troubleshooting",
-      "IT Infrastructure",
-    ],
-  },
-  {
-    number: "03",
-    year: "2024",
-    period: "AUG — SEP 2024",
-    company: "Prodigy InfoTech",
-    role: "Web Development Intern",
-    location: "Bangalore, India",
-    summary:
-      "Web development experience focused on building responsive browser-based interfaces.",
-    details:
-      "A web development internship focused on applying HTML, CSS and JavaScript to practical web interfaces, with attention to responsive layouts and frontend interaction.",
-    tags: ["HTML", "CSS", "JavaScript", "Responsive Design"],
-  },
-];
+function formatMonth(value: string | null, fallback: string) {
+  if (!value) return fallback;
+  return new Date(`${value}T00:00:00`)
+    .toLocaleDateString("en-US", { month: "short", year: "numeric" })
+    .toUpperCase();
+}
+
+function mapExperience(rows: DatabaseExperience[]): Experience[] {
+  return rows.map((row, index) => ({
+    id: row.id,
+    number: String(index + 1).padStart(2, "0"),
+    year: row.start_date
+      ? new Date(`${row.start_date}T00:00:00`).getFullYear().toString()
+      : "—",
+    period: `${formatMonth(row.start_date, "—")} — ${
+      row.is_current ? "PRESENT" : formatMonth(row.end_date, "—")
+    }`,
+    company: row.company,
+    role: row.role,
+    location: row.location ?? "—",
+    summary: row.summary ?? row.description ?? "",
+    details: row.description ?? row.summary ?? "",
+    tags: row.tags ?? [],
+  }));
+}
 
 const Experience = () => {
+  const [experiences, setExperiences] = useState<Experience[]>([]);
   const [selectedExperience, setSelectedExperience] =
     useState<Experience | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadExperiences = async () => {
+      setLoading(true);
+      setError("");
+
+      const { data, error: fetchError } = await supabase
+        .from("experiences")
+        .select(
+          "id, company, role, location, start_date, end_date, is_current, summary, description, tags, sort_order"
+        )
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+
+      if (!mounted) return;
+
+      if (fetchError) {
+        setError("Unable to load experience.");
+        setExperiences([]);
+      } else {
+        setExperiences(
+          mapExperience((data ?? []) as DatabaseExperience[])
+        );
+      }
+
+      setLoading(false);
+    };
+
+    loadExperiences();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!selectedExperience) return;
+
+    const current = experiences.find(
+      (experience) => experience.id === selectedExperience.id
+    );
+
+    if (current) {
+      setSelectedExperience(current);
+    } else {
+      setSelectedExperience(null);
+    }
+  }, [experiences, selectedExperience]);
 
   useEffect(() => {
     if (!selectedExperience) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setSelectedExperience(null);
-      }
+      if (event.key === "Escape") setSelectedExperience(null);
     };
 
     const previousOverflow = document.body.style.overflow;
@@ -105,47 +152,53 @@ const Experience = () => {
             </h2>
           </motion.div>
 
-          <div className="experience-list experience-list-interactive">
-            {experiences.map((experience, index) => (
-              <motion.button
-                key={experience.company}
-                type="button"
-                className="experience-item experience-item-interactive"
-                onClick={() => setSelectedExperience(experience)}
-                initial={{ opacity: 0, y: 35 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.15 }}
-                transition={{
-                  duration: 0.65,
-                  delay: index * 0.08,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                whileHover={{ x: 8 }}
-              >
-                <div className="experience-number">
-                  <span>{experience.number}</span>
-                </div>
-
-                <div className="experience-year">
-                  <span>{experience.year}</span>
-                </div>
-
-                <div className="experience-main">
-                  <h3>{experience.company}</h3>
-
-                  <div className="experience-role">{experience.role}</div>
-
-                  <div className="experience-location">
-                    {experience.location}
+          {loading ? (
+            <div className="experience-data-state">LOADING EXPERIENCE...</div>
+          ) : error ? (
+            <div className="experience-data-state">{error}</div>
+          ) : experiences.length === 0 ? (
+            <div className="experience-data-state">NO EXPERIENCE PUBLISHED.</div>
+          ) : (
+            <div className="experience-list experience-list-interactive">
+              {experiences.map((experience, index) => (
+                <motion.button
+                  key={experience.id}
+                  type="button"
+                  className="experience-item experience-item-interactive"
+                  onClick={() => setSelectedExperience(experience)}
+                  initial={{ opacity: 0, y: 35 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.15 }}
+                  transition={{
+                    duration: 0.65,
+                    delay: index * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  whileHover={{ x: 8 }}
+                >
+                  <div className="experience-number">
+                    <span>{experience.number}</span>
                   </div>
-                </div>
 
-                <div className="experience-arrow experience-arrow-interactive">
-                  <ArrowUpRight size={24} />
-                </div>
-              </motion.button>
-            ))}
-          </div>
+                  <div className="experience-year">
+                    <span>{experience.year}</span>
+                  </div>
+
+                  <div className="experience-main">
+                    <h3>{experience.company}</h3>
+                    <div className="experience-role">{experience.role}</div>
+                    <div className="experience-location">
+                      {experience.location}
+                    </div>
+                  </div>
+
+                  <div className="experience-arrow experience-arrow-interactive">
+                    <ArrowUpRight size={24} />
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          )}
 
           <div className="experience-footer">
             <span>CONTINUOUSLY LEARNING</span>
@@ -176,6 +229,7 @@ const Experience = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 35, scale: 0.97 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              onMouseDown={(event) => event.stopPropagation()}
             >
               <div className="experience-modal-header">
                 <div>

@@ -1,8 +1,20 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+
+interface DatabaseCapability {
+  id: string;
+  title: string;
+  category: string | null;
+  stack: string | null;
+  description: string | null;
+  applications: string[] | null;
+  sort_order: number;
+}
 
 interface Capability {
+  id: string;
   number: string;
   title: string;
   category: string;
@@ -11,106 +23,92 @@ interface Capability {
   applications: string[];
 }
 
-const capabilities: Capability[] = [
-  {
-    number: "01",
-    title: "Python",
-    category: "PROGRAMMING",
-    stack: "PYTHON",
-    description:
-      "A practical programming foundation I use for problem-solving, automation, data work and exploring machine learning concepts.",
-    applications: ["Problem Solving", "Automation", "Data Work", "ML Foundations"],
-  },
-  {
-    number: "02",
-    title: "Java",
-    category: "PROGRAMMING",
-    stack: "JAVA",
-    description:
-      "Object-oriented programming experience focused on building structured solutions and strengthening core software development concepts.",
-    applications: ["OOP", "Application Logic", "Problem Solving", "Core Development"],
-  },
-  {
-    number: "03",
-    title: "C",
-    category: "PROGRAMMING",
-    stack: "C",
-    description:
-      "A foundation in procedural programming and computational thinking, with emphasis on understanding how software works at a fundamental level.",
-    applications: ["Logic Building", "Algorithms", "Data Structures", "Foundations"],
-  },
-  {
-    number: "04",
-    title: "Frontend Development",
-    category: "WEB",
-    stack: "HTML · CSS · JAVASCRIPT",
-    description:
-      "I build responsive interfaces with a focus on clear structure, interaction and visual hierarchy rather than simply making pages functional.",
-    applications: ["Responsive UI", "Interactions", "Layouts", "Web Interfaces"],
-  },
-  {
-    number: "05",
-    title: "Responsive Design",
-    category: "WEB",
-    stack: "HTML · CSS · UI",
-    description:
-      "Designing interfaces that adapt cleanly across screen sizes while keeping the experience intentional on both desktop and mobile.",
-    applications: ["Mobile First", "Adaptive Layouts", "Visual Hierarchy", "Usability"],
-  },
-  {
-    number: "06",
-    title: "REST APIs",
-    category: "WEB",
-    stack: "API · HTTP · JSON",
-    description:
-      "Understanding how applications communicate with backend services and how APIs can connect interfaces with useful data and functionality.",
-    applications: ["API Integration", "HTTP", "JSON", "Data Exchange"],
-  },
-  {
-    number: "07",
-    title: "Google Cloud",
-    category: "CLOUD",
-    stack: "GCP",
-    description:
-      "Cloud fundamentals backed by Google Cloud certification, with an interest in practical deployment, infrastructure and modern development workflows.",
-    applications: ["Cloud Concepts", "DevOps", "Infrastructure", "Deployment"],
-  },
-  {
-    number: "08",
-    title: "Machine Learning",
-    category: "AI / DATA",
-    stack: "ML CONCEPTS · PYTHON",
-    description:
-      "Foundational machine learning knowledge developed through academic work, experimentation and practical Python-based model building.",
-    applications: ["Model Building", "Classification", "Data Analysis", "Experimentation"],
-  },
-  {
-    number: "09",
-    title: "UI / UX",
-    category: "DESIGN",
-    stack: "WIREFRAMING · UX",
-    description:
-      "I approach interfaces from the user's perspective, using wireframing and visual structure to make complex functionality easier to understand.",
-    applications: ["Wireframing", "User Flow", "Usability", "Interface Structure"],
-  },
-  {
-    number: "10",
-    title: "JavaScript",
-    category: "WEB",
-    stack: "JAVASCRIPT",
-    description:
-      "Using JavaScript to turn static interfaces into functional experiences, from small interactions to complete browser-based applications.",
-    applications: ["DOM", "Interactions", "Application Logic", "Web Apps"],
-  },
-];
+const fallbackCapability: Capability = {
+  id: "fallback",
+  number: "01",
+  title: "Capability",
+  category: "SKILL",
+  stack: "—",
+  description: "Explore the capabilities available on this portfolio.",
+  applications: [],
+};
+
+function mapCapabilities(rows: DatabaseCapability[]): Capability[] {
+  return rows.map((row, index) => ({
+    id: row.id,
+    number: String(index + 1).padStart(2, "0"),
+    title: row.title,
+    category: row.category ?? "SKILL",
+    stack: row.stack ?? "—",
+    description: row.description ?? "",
+    applications: row.applications ?? [],
+  }));
+}
 
 const Capabilities = () => {
-  const [activeCapability, setActiveCapability] = useState<Capability>(
-    capabilities[0]
-  );
+  const [capabilities, setCapabilities] = useState<Capability[]>([]);
+  const [activeCapability, setActiveCapability] =
+    useState<Capability>(fallbackCapability);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadCapabilities = async () => {
+      setLoading(true);
+      setError("");
+
+      const { data, error: fetchError } = await supabase
+        .from("capabilities")
+        .select(
+          "id, title, category, stack, description, applications, sort_order"
+        )
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+
+      if (!mounted) return;
+
+      if (fetchError) {
+        setError("Unable to load capabilities.");
+        setCapabilities([]);
+      } else {
+        const mapped = mapCapabilities(
+          (data ?? []) as DatabaseCapability[]
+        );
+        setCapabilities(mapped);
+        if (mapped.length > 0) setActiveCapability(mapped[0]);
+      }
+
+      setLoading(false);
+    };
+
+    loadCapabilities();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!capabilities.length) return;
+
+    const current = capabilities.find(
+      (capability) => capability.id === activeCapability.id
+    );
+
+    if (current) {
+      setActiveCapability(current);
+    } else {
+      setActiveCapability(capabilities[0]);
+    }
+  }, [capabilities, activeCapability.id]);
 
   return (
-    <section id="capabilities" className="capabilities-section capabilities-enhanced">
+    <section
+      id="capabilities"
+      className="capabilities-section capabilities-enhanced"
+    >
       <div className="capabilities-container">
         <motion.div
           className="capabilities-header"
@@ -130,112 +128,130 @@ const Capabilities = () => {
           </h2>
         </motion.div>
 
-        <div className="capabilities-marquee" aria-hidden="true">
-          <motion.div
-            className="capabilities-marquee-track"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              duration: 24,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          >
-            {[...capabilities, ...capabilities].map((capability, index) => (
-              <span key={`${capability.number}-${index}`}>
-                {capability.title.toUpperCase()}
-              </span>
-            ))}
-          </motion.div>
-        </div>
-
-        <div className="capabilities-showcase">
-          <div className="capabilities-grid">
-            {capabilities.map((capability, index) => {
-              const isActive = activeCapability.number === capability.number;
-
-              return (
-                <motion.button
-                  key={capability.number}
-                  type="button"
-                  className={`capability-card capability-card-enhanced ${
-                    isActive ? "is-active" : ""
-                  }`}
-                  onMouseEnter={() => setActiveCapability(capability)}
-                  onFocus={() => setActiveCapability(capability)}
-                  onClick={() => setActiveCapability(capability)}
-                  whileHover={{ x: index % 2 === 0 ? 8 : -8 }}
-                  transition={{ duration: 0.3 }}
-                  aria-label={`Explore ${capability.title}`}
-                >
-                  <div className="capability-card-top">
-                    <span>{capability.number}</span>
-                    <span>{capability.category}</span>
-                  </div>
-
-                  <div className="capability-title">{capability.title}</div>
-
-                  <div className="capability-card-bottom">
-                    <span>{capability.stack}</span>
-                    <ArrowUpRight size={20} />
-                  </div>
-
-                  <motion.span
-                    className="capability-active-line"
-                    animate={{ scaleX: isActive ? 1 : 0 }}
-                    transition={{ duration: 0.35 }}
-                  />
-                </motion.button>
-              );
-            })}
+        {loading ? (
+          <div className="capabilities-data-state">
+            LOADING CAPABILITIES...
           </div>
-
-          <aside className="capability-detail" aria-live="polite">
-            <div className="capability-detail-label">
-              <span>ACTIVE CAPABILITY</span>
-              <span>{activeCapability.number} / 10</span>
+        ) : error ? (
+          <div className="capabilities-data-state">{error}</div>
+        ) : capabilities.length === 0 ? (
+          <div className="capabilities-data-state">
+            NO CAPABILITIES PUBLISHED.
+          </div>
+        ) : (
+          <>
+            <div className="capabilities-marquee" aria-hidden="true">
+              <motion.div
+                className="capabilities-marquee-track"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{
+                  duration: 24,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              >
+                {[...capabilities, ...capabilities].map(
+                  (capability, index) => (
+                    <span key={`${capability.id}-${index}`}>
+                      {capability.title.toUpperCase()}
+                    </span>
+                  )
+                )}
+              </motion.div>
             </div>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeCapability.number}
-                className="capability-detail-content"
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -18 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="capability-detail-category">
-                  {activeCapability.category}
+            <div className="capabilities-showcase">
+              <div className="capabilities-grid">
+                {capabilities.map((capability, index) => {
+                  const isActive = activeCapability.id === capability.id;
+
+                  return (
+                    <motion.button
+                      key={capability.id}
+                      type="button"
+                      className={`capability-card capability-card-enhanced ${
+                        isActive ? "is-active" : ""
+                      }`}
+                      onMouseEnter={() => setActiveCapability(capability)}
+                      onFocus={() => setActiveCapability(capability)}
+                      onClick={() => setActiveCapability(capability)}
+                      whileHover={{ x: index % 2 === 0 ? 8 : -8 }}
+                      transition={{ duration: 0.3 }}
+                      aria-label={`Explore ${capability.title}`}
+                    >
+                      <div className="capability-card-top">
+                        <span>{capability.number}</span>
+                        <span>{capability.category}</span>
+                      </div>
+
+                      <div className="capability-title">
+                        {capability.title}
+                      </div>
+
+                      <div className="capability-card-bottom">
+                        <span>{capability.stack}</span>
+                        <ArrowUpRight size={20} />
+                      </div>
+
+                      <motion.span
+                        className="capability-active-line"
+                        animate={{ scaleX: isActive ? 1 : 0 }}
+                        transition={{ duration: 0.35 }}
+                      />
+                    </motion.button>
+                  );
+                })}
+              </div>
+
+              <aside className="capability-detail" aria-live="polite">
+                <div className="capability-detail-label">
+                  <span>ACTIVE CAPABILITY</span>
+                  <span>
+                    {activeCapability.number} /{" "}
+                    {String(capabilities.length).padStart(2, "0")}
+                  </span>
                 </div>
 
-                <h3>{activeCapability.title}</h3>
+                <motion.div
+                  key={activeCapability.id}
+                  className="capability-detail-content"
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="capability-detail-category">
+                    {activeCapability.category}
+                  </div>
 
-                <p>{activeCapability.description}</p>
+                  <h3>{activeCapability.title}</h3>
 
-                <div className="capability-applications">
-                  {activeCapability.applications.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
-                </div>
+                  <p>{activeCapability.description}</p>
 
-                <div className="capability-detail-footer">
-                  <span>{activeCapability.stack}</span>
-                  <span>EXPLORE / HOVER</span>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </aside>
-        </div>
+                  <div className="capability-applications">
+                    {activeCapability.applications.map((item) => (
+                      <span key={item}>{item}</span>
+                    ))}
+                  </div>
 
-        <div className="capabilities-bottom">
-          <p>
-            I&apos;m most interested in the space where technology, usability
-            and visual thinking meet — building practical digital experiences
-            that are clear, useful and considered.
-          </p>
+                  <div className="capability-detail-footer">
+                    <span>{activeCapability.stack}</span>
+                    <span>EXPLORE / HOVER</span>
+                  </div>
+                </motion.div>
+              </aside>
+            </div>
 
-          <span>BUILDING • EXPLORING • ADAPTING</span>
-        </div>
+            <div className="capabilities-bottom">
+              <p>
+                I&apos;m most interested in the space where technology,
+                usability and visual thinking meet — building practical
+                digital experiences that are clear, useful and considered.
+              </p>
+
+              <span>BUILDING • EXPLORING • ADAPTING</span>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

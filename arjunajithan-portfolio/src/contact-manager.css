@@ -1,0 +1,189 @@
+/* ============================================================
+   05 / CONTACT CMS
+   Desktop-first admin manager
+============================================================ */
+
+.contact-manager {
+  display: grid;
+  gap: 28px;
+}
+
+.contact-manager-state {
+  padding: 45px 0;
+  font: 9px/1 "DM Mono", monospace;
+  letter-spacing: .1em;
+  opacity: .55;
+}
+
+.contact-manager-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(17,17,17,.14);
+}
+
+.contact-manager-count {
+  margin: 9px 0 0;
+  font: 8px/1 "DM Mono", monospace;
+  letter-spacing: .08em;
+  opacity: .5;
+}
+
+.contact-manager-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font: 8px/1 "DM Mono", monospace;
+  letter-spacing: .08em;
+  opacity: .55;
+}
+
+.contact-manager-live span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.contact-manager-form {
+  display: grid;
+  gap: 35px;
+}
+
+.contact-manager-section {
+  padding: 30px 0;
+  border-bottom: 1px solid rgba(17,17,17,.14);
+}
+
+.contact-manager-section-heading {
+  display: grid;
+  gap: 11px;
+  margin-bottom: 28px;
+}
+
+.contact-manager-section-heading > span {
+  font: 8px/1 "DM Mono", monospace;
+  letter-spacing: .1em;
+  opacity: .45;
+}
+
+.contact-manager-section-heading h2 {
+  margin: 0;
+  font-size: clamp(3.2rem, 6vw, 6.5rem);
+  line-height: .78;
+  letter-spacing: -.065em;
+  font-weight: 500;
+}
+
+.contact-manager-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 35px;
+}
+
+.contact-manager-grid label {
+  display: grid;
+  gap: 9px;
+  font: 7px/1 "DM Mono", monospace;
+  letter-spacing: .1em;
+  opacity: .62;
+}
+
+.contact-manager-grid label.contact-manager-full {
+  grid-column: 1 / -1;
+}
+
+.contact-manager-grid input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(17,17,17,.28);
+  outline: 0;
+  background: transparent;
+  color: #111;
+  font: 15px/1.4 "DM Sans", Arial, sans-serif;
+}
+
+.contact-manager-grid input:focus {
+  border-bottom-color: #111;
+}
+
+.contact-manager-feedback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 13px;
+  border: 1px solid rgba(17,17,17,.2);
+  font: 8px/1.35 "DM Mono", monospace;
+  letter-spacing: .04em;
+}
+
+.contact-manager-feedback.is-error {
+  border-color: rgba(150,0,0,.35);
+}
+
+.contact-manager-form-error {
+  padding: 11px 13px;
+  border: 1px solid rgba(150,0,0,.35);
+  font: 8px/1.35 "DM Mono", monospace;
+}
+
+.contact-manager-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  padding-top: 5px;
+}
+
+.contact-manager-footer > span {
+  font: 8px/1.4 "DM Mono", monospace;
+  letter-spacing: .05em;
+  opacity: .42;
+}
+
+.contact-manager-footer button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 17px;
+  border: 1px solid #111;
+  background: #111;
+  color: #f2f2ee;
+  font: 8px/1 "DM Mono", monospace;
+  letter-spacing: .09em;
+  cursor: pointer;
+  transition: transform .25s ease, background .25s ease, color .25s ease;
+}
+
+.contact-manager-footer button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: transparent;
+  color: #111;
+}
+
+.contact-manager-footer button:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+@media (max-width: 800px) {
+  .contact-manager-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-manager-grid label.contact-manager-full {
+    grid-column: auto;
+  }
+
+  .contact-manager-toolbar,
+  .contact-manager-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
