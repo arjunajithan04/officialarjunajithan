@@ -24,6 +24,8 @@ function Hero() {
   const outlineY = useTransform(smoothY, [-1, 1], [8, -8]);
   const orbX = useTransform(smoothX, [-1, 1], [-35, 35]);
   const orbY = useTransform(smoothY, [-1, 1], [-25, 25]);
+  const portraitX = useTransform(smoothX, [-1, 1], [-12, 12]);
+  const portraitY = useTransform(smoothY, [-1, 1], [-8, 8]);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -36,13 +38,41 @@ function Hero() {
   }, [mouseX, mouseY]);
 
   return (
-    <section className="hero hero-refined">
+    <section id="hero" className="hero hero-refined hero-dark">
       <div className="hero-refined-grid" aria-hidden="true" />
       <motion.div
         className="hero-refined-orb"
         style={{ x: orbX, y: orbY }}
         aria-hidden="true"
       />
+
+      <motion.div
+        className="hero-refined-portrait-wrap"
+        initial={{ opacity: 0, scale: 1.04, x: 40 }}
+        whileInView={{ opacity: 1, scale: 1, x: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 1.35, delay: 0.35, ease }}
+        aria-hidden="true"
+      >
+        <motion.img
+          src="/images/hero-portrait.jpg"
+          alt=""
+          className="hero-refined-portrait"
+          style={{ x: portraitX, y: portraitY }}
+        />
+        <span className="hero-refined-portrait-vignette" />
+      </motion.div>
+
+      <motion.div
+        className="hero-refined-coordinate"
+        initial={{ opacity: 0, y: -10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.35 }}
+        transition={{ duration: 0.7, delay: 0.45, ease }}
+      >
+        <span>12.9716° N</span>
+        <span>77.5946° E</span>
+      </motion.div>
 
       <div className="hero-meta hero-refined-meta">
         <motion.span
@@ -72,11 +102,26 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.45, ease }}
         >
           <p className="hero-intro">MCA STUDENT · DEVELOPER · BUILDER</p>
-          <span className="hero-refined-status">
+          <span className="hero-refined-status hero-refined-status-desktop">
             <span className="hero-refined-status-dot" />
             BUILDING WITH INTENT
           </span>
         </motion.div>
+
+        {/* <motion.div
+          className="hero-refined-discipline"
+          initial={{ opacity: 0, x: 16 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 1.15, ease }}
+          aria-hidden="true"
+        >
+          <span>//</span>
+          <span>SOFTWARE</span>
+          <span>WEB</span>
+          <span>AI</span>
+          <span>EXPERIMENTATION</span>
+        </motion.div> */}
 
         <motion.div
           className="hero-title-wrapper"
@@ -116,15 +161,15 @@ function Hero() {
           </h1>
         </motion.div>
 
-        <motion.div
+        {/* <motion.div
           className="hero-line hero-refined-line"
           initial={{ scaleX: 0, transformOrigin: "left" }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: false, amount: 0.25 }}
           transition={{ duration: 1.2, delay: 1.45, ease }}
-        />
+        /> */}
 
-        <motion.div
+        {/* <motion.div
           className="hero-refined-keywords"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -135,7 +180,7 @@ function Hero() {
           <span>AI</span>
           <span>WEB</span>
           <span>EXPERIMENTATION</span>
-        </motion.div>
+        </motion.div> */}
       </div>
 
       <div className="hero-bottom hero-refined-bottom">
@@ -155,7 +200,7 @@ function Hero() {
         </motion.div>
 
         <motion.a
-          href="#work"
+          href="#projects"
           className="scroll-indicator hero-refined-scroll"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}

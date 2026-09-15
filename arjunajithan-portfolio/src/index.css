@@ -4121,6 +4121,152 @@ a {
   }
 }
 
+
+/* ============================================================
+   HERO / DARK EDITORIAL MODE
+   High-contrast hero treatment with integrated portrait.
+============================================================ */
+.hero-dark {
+  color: #f2f2ee;
+  background: #080808;
+  min-height: 100svh;
+}
+
+.hero-dark .hero-refined-grid {
+  opacity: 0.7;
+  background-image:
+    linear-gradient(to right, rgba(242, 242, 238, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242, 242, 238, 0.045) 1px, transparent 1px);
+  background-size: 8vw 8vw;
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 90%, transparent);
+}
+
+.hero-dark .hero-refined-orb {
+  border-color: rgba(242, 242, 238, 0.13);
+  opacity: 0.85;
+}
+
+.hero-dark .hero-refined-orb::before {
+  border-color: rgba(242, 242, 238, 0.08);
+}
+
+.hero-dark .hero-refined-orb::after {
+  background: rgba(242, 242, 238, 0.045);
+}
+
+.hero-dark .hero-solid { color: #f2f2ee; }
+.hero-dark .hero-outline { -webkit-text-stroke-color: rgba(242, 242, 238, 0.9); }
+.hero-dark .hero-line { background: rgba(242, 242, 238, 0.55); }
+.hero-dark .hero-refined-status-dot { background: #f2f2ee; }
+.hero-dark .hero-refined-scroll-circle { border-color: rgba(242, 242, 238, 0.8); }
+.hero-dark .hero-refined-scroll:hover .hero-refined-scroll-circle {
+  background: #f2f2ee;
+  color: #080808;
+}
+.hero-dark .hero-refined-status,
+.hero-dark .hero-refined-label,
+.hero-dark .hero-refined-keywords { color: #f2f2ee; }
+
+.hero-refined-portrait-wrap {
+  position: absolute;
+  right: -4vw;
+  bottom: 0;
+  width: min(62vw, 980px);
+  height: 86%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-refined-portrait {
+  position: absolute;
+  inset: -2% -1% 0 0;
+  width: 100%;
+  height: 104%;
+  object-fit: cover;
+  object-position: right center;
+  filter: grayscale(100%) contrast(1.12) brightness(0.95);
+  mix-blend-mode: screen;
+  opacity: 0.92;
+  will-change: transform;
+}
+
+.hero-refined-portrait-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #080808 0%, rgba(8,8,8,0.7) 15%, transparent 43%),
+    linear-gradient(0deg, #080808 0%, transparent 19%);
+}
+
+.hero-refined-coordinate {
+  position: absolute;
+  top: 14.5%;
+  right: 4vw;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: "DM Mono", monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.08em;
+  opacity: 0.58;
+}
+
+.hero-refined-discipline {
+  position: absolute;
+  left: 48.5%;
+  top: 43%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-left: 13px;
+  border-left: 1px solid rgba(242,242,238,0.45);
+  font-family: "DM Mono", monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.09em;
+  line-height: 1.05;
+  opacity: 0.7;
+}
+
+.hero-refined-discipline span:first-child {
+  margin-bottom: 5px;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.hero-dark .hero-refined-content { z-index: 2; }
+.hero-dark .hero-refined-bottom { z-index: 4; }
+
+@media (max-width: 1100px) {
+  .hero-refined-portrait-wrap { width: 66vw; opacity: 0.8; }
+  .hero-refined-discipline { left: 52%; }
+}
+
+@media (max-width: 700px) {
+  .hero-dark { min-height: 100svh; }
+  .hero-refined-portrait-wrap {
+    right: -35vw;
+    width: 105vw;
+    height: 62%;
+    opacity: 0.78;
+  }
+  .hero-refined-portrait-vignette {
+    background:
+      linear-gradient(180deg, #080808 0%, rgba(8,8,8,0.15) 28%, rgba(8,8,8,0.75) 78%, #080808 100%),
+      linear-gradient(90deg, #080808 0%, transparent 55%);
+  }
+  .hero-refined-coordinate { top: 12%; right: 6vw; }
+  .hero-refined-discipline { display: none; }
+  .hero-dark .hero-refined-intro-row { position: relative; z-index: 4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-refined-portrait,
+  .hero-refined-portrait-wrap { transform: none !important; }
+}
+
 /* ============================================================
    PROJECTS / DESKTOP POLISH
    Editorial hierarchy + stronger hover choreography
