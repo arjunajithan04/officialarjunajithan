@@ -32,41 +32,8 @@ function getActiveSection(): Section {
 function SectionTransition() {
   const [active, setActive] = useState(sections[0]);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [easterEggOpen, setEasterEggOpen] = useState(false);
   const previousId = useRef(sections[0].id);
   const timeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setEasterEggOpen(false);
-        return;
-      }
-
-      // Keep the easter egg non-essential and ignore it while typing.
-      const target = event.target as HTMLElement | null;
-      if (
-        target?.tagName === "INPUT" ||
-        target?.tagName === "TEXTAREA" ||
-        target?.isContentEditable
-      ) {
-        return;
-      }
-
-      if (
-        event.key.toLowerCase() === "a" &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.altKey
-      ) {
-        event.preventDefault();
-        setEasterEggOpen(true);
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
 
   useEffect(() => {
     const update = () => {
@@ -96,7 +63,7 @@ function SectionTransition() {
   }, []);
 
   return (
-    <div className="section-transition" aria-hidden={easterEggOpen ? undefined : "true"}>
+    <div className="section-transition" aria-hidden="true">
       <AnimatePresence>
         {isTransitioning && (
           <motion.div
@@ -130,71 +97,6 @@ function SectionTransition() {
           </motion.span>
         </AnimatePresence>
       </div>
-
-      <AnimatePresence>
-        {easterEggOpen && (
-          <motion.div
-            className="portfolio-easter-egg"
-            role="dialog"
-            aria-modal="true"
-            aria-label="ARJUN.OS terminal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease }}
-            onClick={() => setEasterEggOpen(false)}
-          >
-            <div className="portfolio-easter-egg-scanlines" />
-
-            <motion.div
-              className="portfolio-terminal"
-              initial={{ opacity: 0, y: 22, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.985 }}
-              transition={{ duration: 0.42, ease }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="portfolio-terminal-topbar">
-                <div className="portfolio-terminal-lights" aria-hidden="true">
-                  <i />
-                  <i />
-                  <i />
-                </div>
-                <span>ARJUN.OS / TERMINAL</span>
-                <button type="button" onClick={() => setEasterEggOpen(false)} aria-label="Close terminal">
-                  ESC
-                </button>
-              </div>
-
-              <div className="portfolio-terminal-screen">
-                <div className="portfolio-terminal-prompt">ARJUN.OS</div>
-                <p><span>&gt;</span> whoami</p>
-                <strong>ARJUN AJITHAN</strong>
-
-                <p><span>&gt;</span> skills</p>
-                <div className="portfolio-terminal-skills">
-                  <span>PYTHON</span>
-                  <span>REACT</span>
-                  <span>AI</span>
-                  <span>FLUTTER</span>
-                  <span>SUPABASE</span>
-                  <span>NETWORKING</span>
-                </div>
-
-                <p><span>&gt;</span> status</p>
-                <strong className="portfolio-terminal-status">AVAILABLE_FOR_OPPORTUNITIES</strong>
-
-                <p className="portfolio-terminal-cursor-line"><span>&gt;</span> <b>_</b></p>
-              </div>
-
-              <div className="portfolio-terminal-footer">
-                <span>SECRET LAYER // 01</span>
-                <span>PRESS ESC TO EXIT</span>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

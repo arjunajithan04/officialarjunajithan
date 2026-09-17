@@ -60,7 +60,6 @@ const Experience = () => {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [selectedExperience, setSelectedExperience] =
     useState<Experience | null>(null);
-  const [activeExperience, setActiveExperience] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -85,9 +84,9 @@ const Experience = () => {
         setError("Unable to load experience.");
         setExperiences([]);
       } else {
-        const mapped = mapExperience((data ?? []) as DatabaseExperience[]);
-        setExperiences(mapped);
-        setActiveExperience(mapped[0]?.id ?? null);
+        setExperiences(
+          mapExperience((data ?? []) as DatabaseExperience[])
+        );
       }
 
       setLoading(false);
@@ -160,27 +159,13 @@ const Experience = () => {
           ) : experiences.length === 0 ? (
             <div className="experience-data-state">NO EXPERIENCE PUBLISHED.</div>
           ) : (
-            <div className="experience-list experience-list-interactive experience-timeline">
-              <div className="experience-timeline-track" aria-hidden="true">
-                <motion.div
-                  className="experience-timeline-track-fill"
-                  initial={{ scaleY: 0 }}
-                  whileInView={{ scaleY: 1 }}
-                  viewport={{ once: false, amount: 0.15 }}
-                  transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </div>
-
+            <div className="experience-list experience-list-interactive">
               {experiences.map((experience, index) => (
                 <motion.button
                   key={experience.id}
                   type="button"
-                  className={`experience-item experience-item-interactive experience-timeline-item ${
-                    activeExperience === experience.id ? "is-active" : ""
-                  }`}
+                  className="experience-item experience-item-interactive"
                   onClick={() => setSelectedExperience(experience)}
-                  onMouseEnter={() => setActiveExperience(experience.id)}
-                  onFocus={() => setActiveExperience(experience.id)}
                   initial={{ opacity: 0, y: 35 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: false, amount: 0.15 }}
@@ -197,11 +182,6 @@ const Experience = () => {
 
                   <div className="experience-year">
                     <span>{experience.year}</span>
-                    <small>{experience.period}</small>
-                  </div>
-
-                  <div className="experience-timeline-node" aria-hidden="true">
-                    <span />
                   </div>
 
                   <div className="experience-main">

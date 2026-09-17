@@ -3,8 +3,6 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
-  useScroll,
-  useReducedMotion,
 } from "framer-motion";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";
@@ -16,8 +14,6 @@ const ease = [0.22, 1, 0.36, 1] as const;
 function Hero() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
 
   const smoothX = useSpring(mouseX, { stiffness: 80, damping: 20 });
   const smoothY = useSpring(mouseY, { stiffness: 80, damping: 20 });
@@ -28,27 +24,6 @@ function Hero() {
   const outlineY = useTransform(smoothY, [-1, 1], [8, -8]);
   const orbX = useTransform(smoothX, [-1, 1], [-35, 35]);
   const orbY = useTransform(smoothY, [-1, 1], [-25, 25]);
-  const portraitX = useTransform(smoothX, [-1, 1], [-12, 12]);
-  const portraitY = useTransform(smoothY, [-1, 1], [-8, 8]);
-
-  // Hero depth layer: subtle scroll-linked recession as the next section approaches.
-  const heroParallaxY = useTransform(scrollYProgress, [0, 0.16], [0, -72]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.16], [1, 0.965]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.72]);
-  const heroBlur = useTransform(scrollYProgress, [0, 0.18], [0, 2.5]);
-
-  // Independent depth movement for the existing visual layers.
-  const gridX = useTransform(smoothX, [-1, 1], [4, -4]);
-  const gridY = useTransform(smoothY, [-1, 1], [3, -3]);
-  const orbScale = useTransform(smoothX, [-1, 1], [0.97, 1.03]);
-  const portraitDepthY = useTransform(smoothY, [-1, 1], [-4, 4]);
-  const portraitScale = useTransform(smoothX, [-1, 1], [1, 1.018]);
-  const metaY = useTransform(scrollYProgress, [0, 0.16], [0, -18]);
-  const metaOpacity = useTransform(scrollYProgress, [0, 0.14], [1, 0.7]);
-  const contentY = useTransform(scrollYProgress, [0, 0.18], [0, -30]);
-  const bottomY = useTransform(scrollYProgress, [0, 0.16], [0, -42]);
-  const bottomOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0.55]);
-  const heroFilter = useTransform(heroBlur, (value) => `blur(${value}px)`);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -61,74 +36,15 @@ function Hero() {
   }, [mouseX, mouseY]);
 
   return (
-    <motion.section
-      id="hero"
-      className="hero hero-refined hero-dark"
-      style={{
-        y: shouldReduceMotion ? 0 : heroParallaxY,
-        scale: shouldReduceMotion ? 1 : heroScale,
-        opacity: shouldReduceMotion ? 1 : heroOpacity,
-        filter: shouldReduceMotion ? "blur(0px)" : heroFilter,
-      }}
-    >
-      <motion.div
-        className="hero-refined-grid"
-        style={{
-          x: shouldReduceMotion ? 0 : gridX,
-          y: shouldReduceMotion ? 0 : gridY,
-        }}
-        aria-hidden="true"
-      />
+    <section className="hero hero-refined">
+      <div className="hero-refined-grid" aria-hidden="true" />
       <motion.div
         className="hero-refined-orb"
-        style={{
-          x: shouldReduceMotion ? 0 : orbX,
-          y: shouldReduceMotion ? 0 : orbY,
-          scale: shouldReduceMotion ? 1 : orbScale,
-        }}
+        style={{ x: orbX, y: orbY }}
         aria-hidden="true"
       />
 
-      <motion.div
-        className="hero-refined-portrait-wrap"
-        style={{ y: shouldReduceMotion ? 0 : portraitDepthY }}
-        initial={{ opacity: 0, scale: 1.04, x: 40 }}
-        whileInView={{ opacity: 1, scale: 1, x: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 1.35, delay: 0.35, ease }}
-        aria-hidden="true"
-      >
-        <motion.img
-          src="/images/hero-portrait.jpg"
-          alt=""
-          className="hero-refined-portrait"
-          style={{
-            x: shouldReduceMotion ? 0 : portraitX,
-            y: shouldReduceMotion ? 0 : portraitY,
-            scale: shouldReduceMotion ? 1 : portraitScale,
-          }}
-        />
-        <span className="hero-refined-portrait-vignette" />
-      </motion.div>
-
-      <motion.div
-        className="hero-refined-coordinate"
-        initial={{ opacity: 0, y: -10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.35 }}
-        transition={{ duration: 0.7, delay: 0.45, ease }}
-      >
-        <span>13°04'26.3"N</span>      
-        <span>77°40'11.4"E</span>
-      </motion.div>
-
-      <motion.div
-        className="hero-meta hero-refined-meta"
-        style={{
-          y: shouldReduceMotion ? 0 : metaY,
-          opacity: shouldReduceMotion ? 1 : metaOpacity,
-        }}
-      >
+      <div className="hero-meta hero-refined-meta">
         <motion.span
           initial={{ opacity: 0, y: -15 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -145,12 +61,9 @@ function Hero() {
         >
           INDIA
         </motion.span>
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="hero-content hero-refined-content"
-        style={{ y: shouldReduceMotion ? 0 : contentY }}
-      >
+      <div className="hero-content hero-refined-content">
         <motion.div
           className="hero-refined-intro-row"
           initial={{ opacity: 0, y: 18 }}
@@ -159,20 +72,10 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.45, ease }}
         >
           <p className="hero-intro">MCA STUDENT · DEVELOPER · BUILDER</p>
-          <span className="hero-refined-status hero-refined-status-desktop">
+          <span className="hero-refined-status">
             <span className="hero-refined-status-dot" />
             BUILDING WITH INTENT
           </span>
-        </motion.div>
-
-        <motion.div
-          className="hero-refined-discipline"
-          initial={{ opacity: 0, x: 16 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.8, delay: 1.15, ease }}
-          aria-hidden="true"
-        >
         </motion.div>
 
         <motion.div
@@ -212,15 +115,30 @@ function Hero() {
             ))}
           </h1>
         </motion.div>
-      </motion.div>
 
-      <motion.div
-        className="hero-bottom hero-refined-bottom"
-        style={{
-          y: shouldReduceMotion ? 0 : bottomY,
-          opacity: shouldReduceMotion ? 1 : bottomOpacity,
-        }}
-      >
+        <motion.div
+          className="hero-line hero-refined-line"
+          initial={{ scaleX: 0, transformOrigin: "left" }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: false, amount: 0.25 }}
+          transition={{ duration: 1.2, delay: 1.45, ease }}
+        />
+
+        <motion.div
+          className="hero-refined-keywords"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.25 }}
+          transition={{ duration: 0.7, delay: 1.65, ease }}
+        >
+          <span>SOFTWARE</span>
+          <span>AI</span>
+          <span>WEB</span>
+          <span>EXPERIMENTATION</span>
+        </motion.div>
+      </div>
+
+      <div className="hero-bottom hero-refined-bottom">
         <motion.div
           className="hero-refined-statement"
           initial={{ opacity: 0, y: 20 }}
@@ -237,7 +155,7 @@ function Hero() {
         </motion.div>
 
         <motion.a
-          href="#projects"
+          href="#work"
           className="scroll-indicator hero-refined-scroll"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -246,7 +164,7 @@ function Hero() {
         >
           <span className="hero-refined-scroll-circle">
             <motion.span
-              animate={shouldReduceMotion ? undefined : { y: [0, 5, 0] }}
+              animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             >
               <ArrowDown size={16} />
@@ -255,8 +173,8 @@ function Hero() {
           <span>SCROLL TO EXPLORE</span>
           <ArrowUpRight className="hero-refined-scroll-arrow" size={15} />
         </motion.a>
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 }
 
