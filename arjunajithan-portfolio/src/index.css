@@ -4600,3 +4600,256 @@ a {
   font-size: 7px;
   letter-spacing: .1em;
 }
+
+
+
+/* ============================================================
+   02 / EXPERIENCE — TIMELINE REFINEMENT
+   Add after the existing Experience styles.
+   Preserves the existing modal and CMS data flow.
+============================================================ */
+
+.experience-timeline {
+  position: relative;
+  isolation: isolate;
+  padding-left: 0;
+}
+
+/* Continuous career rail */
+.experience-timeline-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 255px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.experience-timeline-track-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  background: rgba(245, 245, 242, 0.72);
+  opacity: 0.45;
+}
+
+/* Each row becomes a timeline chapter */
+.experience-timeline-item {
+  grid-template-columns: 80px 150px 36px minmax(0, 1fr) 180px;
+  min-height: 190px;
+  align-items: start;
+  z-index: 1;
+}
+
+.experience-timeline-item::after {
+  content: "";
+  position: absolute;
+  left: 255px;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.experience-timeline-item:last-child::after {
+  display: none;
+}
+
+/* Timeline node */
+.experience-timeline-node {
+  position: relative;
+  width: 36px;
+  height: 100%;
+  min-height: 110px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.experience-timeline-node span {
+  position: absolute;
+  top: 5px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgba(245, 245, 242, 0.7);
+  background: #111111;
+  border-radius: 50%;
+  transform: scale(0.75);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.experience-timeline-item.is-active .experience-timeline-node span,
+.experience-timeline-item:hover .experience-timeline-node span {
+  transform: scale(1.35);
+  background: #f5f5f2;
+  box-shadow: 0 0 0 7px rgba(245, 245, 242, 0.07);
+}
+
+/* Year becomes a stronger timeline timestamp */
+.experience-timeline-item .experience-year {
+  padding-top: 1px;
+}
+
+.experience-timeline-item .experience-year span {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.experience-timeline-item .experience-year small {
+  max-width: 100px;
+  line-height: 1.35;
+}
+
+/* Active chapter emphasis */
+.experience-timeline-item .experience-main {
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.experience-timeline-item:not(.is-active) .experience-main {
+  opacity: 0.78;
+}
+
+.experience-timeline-item.is-active .experience-main {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+.experience-timeline-item .experience-main h3 {
+  transition: letter-spacing 0.35s ease;
+}
+
+.experience-timeline-item.is-active .experience-main h3 {
+  letter-spacing: -0.052em;
+}
+
+.experience-timeline-item .experience-arrow-interactive {
+  position: relative;
+  z-index: 2;
+}
+
+/* Tiny timeline hint under the header */
+.experience-header {
+  position: relative;
+}
+
+.experience-header::after {
+  content: "SCROLL THROUGH THE CHAPTERS";
+  display: block;
+  margin-top: 28px;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  opacity: 0.38;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .experience-timeline-track {
+    left: 179px;
+  }
+
+  .experience-timeline-item {
+    grid-template-columns: 50px 100px 30px minmax(0, 1fr) 100px;
+  }
+
+  .experience-timeline-item::after {
+    left: 179px;
+  }
+
+  .experience-timeline-node {
+    width: 30px;
+  }
+}
+
+/* Mobile keeps the timeline readable rather than forcing a dense desktop grid */
+@media (max-width: 650px) {
+  .experience-timeline {
+    padding-left: 18px;
+  }
+
+  .experience-timeline-track {
+    left: 31px;
+  }
+
+  .experience-timeline-item {
+    grid-template-columns: 32px 1fr;
+    gap: 16px;
+    min-height: 170px;
+    padding: 42px 0 42px 0;
+  }
+
+  .experience-timeline-item::after {
+    left: 31px;
+  }
+
+  .experience-timeline-item .experience-number {
+    grid-row: 1;
+    grid-column: 1;
+    padding-top: 2px;
+    opacity: 0.55;
+  }
+
+  .experience-timeline-item .experience-year {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: baseline;
+  }
+
+  .experience-timeline-item .experience-year small {
+    max-width: none;
+  }
+
+  .experience-timeline-item .experience-timeline-node {
+    position: absolute;
+    left: -1px;
+    top: 42px;
+    width: 14px;
+    min-height: 14px;
+    height: 14px;
+  }
+
+  .experience-timeline-item .experience-timeline-node span {
+    width: 8px;
+    height: 8px;
+  }
+
+  .experience-timeline-item .experience-main {
+    grid-column: 2;
+    grid-row: 2;
+    padding-right: 30px;
+    margin-top: 12px;
+  }
+
+  .experience-timeline-item .experience-arrow {
+    position: absolute;
+    top: 42px;
+    right: 0;
+  }
+
+  .experience-timeline-item.is-active .experience-main {
+    transform: none;
+  }
+
+  .experience-header::after {
+    margin-top: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience-timeline-node span,
+  .experience-timeline-item .experience-main,
+  .experience-timeline-item .experience-main h3 {
+    transition: none;
+  }
+}

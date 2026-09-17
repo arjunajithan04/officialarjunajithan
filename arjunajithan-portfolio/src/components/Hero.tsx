@@ -3,6 +3,8 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
+  useScroll,
+  useReducedMotion,
 } from "framer-motion";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";
@@ -14,6 +16,8 @@ const ease = [0.22, 1, 0.36, 1] as const;
 function Hero() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
 
   const smoothX = useSpring(mouseX, { stiffness: 80, damping: 20 });
   const smoothY = useSpring(mouseY, { stiffness: 80, damping: 20 });
@@ -27,6 +31,25 @@ function Hero() {
   const portraitX = useTransform(smoothX, [-1, 1], [-12, 12]);
   const portraitY = useTransform(smoothY, [-1, 1], [-8, 8]);
 
+  // Hero depth layer: subtle scroll-linked recession as the next section approaches.
+  const heroParallaxY = useTransform(scrollYProgress, [0, 0.16], [0, -72]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.16], [1, 0.965]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.72]);
+  const heroBlur = useTransform(scrollYProgress, [0, 0.18], [0, 2.5]);
+
+  // Independent depth movement for the existing visual layers.
+  const gridX = useTransform(smoothX, [-1, 1], [4, -4]);
+  const gridY = useTransform(smoothY, [-1, 1], [3, -3]);
+  const orbScale = useTransform(smoothX, [-1, 1], [0.97, 1.03]);
+  const portraitDepthY = useTransform(smoothY, [-1, 1], [-4, 4]);
+  const portraitScale = useTransform(smoothX, [-1, 1], [1, 1.018]);
+  const metaY = useTransform(scrollYProgress, [0, 0.16], [0, -18]);
+  const metaOpacity = useTransform(scrollYProgress, [0, 0.14], [1, 0.7]);
+  const contentY = useTransform(scrollYProgress, [0, 0.18], [0, -30]);
+  const bottomY = useTransform(scrollYProgress, [0, 0.16], [0, -42]);
+  const bottomOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0.55]);
+  const heroFilter = useTransform(heroBlur, (value) => `blur(${value}px)`);
+
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       mouseX.set((event.clientX / window.innerWidth) * 2 - 1);
@@ -38,16 +61,37 @@ function Hero() {
   }, [mouseX, mouseY]);
 
   return (
-    <section id="hero" className="hero hero-refined hero-dark">
-      <div className="hero-refined-grid" aria-hidden="true" />
+    <motion.section
+      id="hero"
+      className="hero hero-refined hero-dark"
+      style={{
+        y: shouldReduceMotion ? 0 : heroParallaxY,
+        scale: shouldReduceMotion ? 1 : heroScale,
+        opacity: shouldReduceMotion ? 1 : heroOpacity,
+        filter: shouldReduceMotion ? "blur(0px)" : heroFilter,
+      }}
+    >
+      <motion.div
+        className="hero-refined-grid"
+        style={{
+          x: shouldReduceMotion ? 0 : gridX,
+          y: shouldReduceMotion ? 0 : gridY,
+        }}
+        aria-hidden="true"
+      />
       <motion.div
         className="hero-refined-orb"
-        style={{ x: orbX, y: orbY }}
+        style={{
+          x: shouldReduceMotion ? 0 : orbX,
+          y: shouldReduceMotion ? 0 : orbY,
+          scale: shouldReduceMotion ? 1 : orbScale,
+        }}
         aria-hidden="true"
       />
 
       <motion.div
         className="hero-refined-portrait-wrap"
+        style={{ y: shouldReduceMotion ? 0 : portraitDepthY }}
         initial={{ opacity: 0, scale: 1.04, x: 40 }}
         whileInView={{ opacity: 1, scale: 1, x: 0 }}
         viewport={{ once: false, amount: 0.2 }}
@@ -58,7 +102,11 @@ function Hero() {
           src="/images/hero-portrait.jpg"
           alt=""
           className="hero-refined-portrait"
-          style={{ x: portraitX, y: portraitY }}
+          style={{
+            x: shouldReduceMotion ? 0 : portraitX,
+            y: shouldReduceMotion ? 0 : portraitY,
+            scale: shouldReduceMotion ? 1 : portraitScale,
+          }}
         />
         <span className="hero-refined-portrait-vignette" />
       </motion.div>
@@ -70,11 +118,17 @@ function Hero() {
         viewport={{ once: false, amount: 0.35 }}
         transition={{ duration: 0.7, delay: 0.45, ease }}
       >
-        <span>12.9716° N</span>
-        <span>77.5946° E</span>
+        <span>13°04'26.3"N</span>      
+        <span>77°40'11.4"E</span>
       </motion.div>
 
-      <div className="hero-meta hero-refined-meta">
+      <motion.div
+        className="hero-meta hero-refined-meta"
+        style={{
+          y: shouldReduceMotion ? 0 : metaY,
+          opacity: shouldReduceMotion ? 1 : metaOpacity,
+        }}
+      >
         <motion.span
           initial={{ opacity: 0, y: -15 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -91,9 +145,12 @@ function Hero() {
         >
           INDIA
         </motion.span>
-      </div>
+      </motion.div>
 
-      <div className="hero-content hero-refined-content">
+      <motion.div
+        className="hero-content hero-refined-content"
+        style={{ y: shouldReduceMotion ? 0 : contentY }}
+      >
         <motion.div
           className="hero-refined-intro-row"
           initial={{ opacity: 0, y: 18 }}
@@ -155,9 +212,15 @@ function Hero() {
             ))}
           </h1>
         </motion.div>
-      </div>
+      </motion.div>
 
-      <div className="hero-bottom hero-refined-bottom">
+      <motion.div
+        className="hero-bottom hero-refined-bottom"
+        style={{
+          y: shouldReduceMotion ? 0 : bottomY,
+          opacity: shouldReduceMotion ? 1 : bottomOpacity,
+        }}
+      >
         <motion.div
           className="hero-refined-statement"
           initial={{ opacity: 0, y: 20 }}
@@ -183,7 +246,7 @@ function Hero() {
         >
           <span className="hero-refined-scroll-circle">
             <motion.span
-              animate={{ y: [0, 5, 0] }}
+              animate={shouldReduceMotion ? undefined : { y: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             >
               <ArrowDown size={16} />
@@ -192,8 +255,8 @@ function Hero() {
           <span>SCROLL TO EXPLORE</span>
           <ArrowUpRight className="hero-refined-scroll-arrow" size={15} />
         </motion.a>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
 
