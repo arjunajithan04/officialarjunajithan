@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import AdminApp from "./AdminApp";
 import Cursor from "./components/Cursor";
 import SmartCursor from "./components/SmartCursor";
