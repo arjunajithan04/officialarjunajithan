@@ -45,6 +45,28 @@
   filter: none;
 }
 
+
+/* Dark hero navigation */
+.site-navigation.dynamic-navigation.is-hero-dark:not(.is-scrolled) {
+  color: #f2f2ee;
+}
+.site-navigation.dynamic-navigation.is-hero-dark:not(.is-scrolled) .dynamic-nav-item {
+  color: #f2f2ee;
+}
+.site-navigation.dynamic-navigation.is-hero-dark:not(.is-scrolled) .dynamic-nav-status {
+  color: #f2f2ee;
+}
+.site-navigation.dynamic-navigation.is-hero-dark:not(.is-scrolled) .dynamic-nav-active-pill {
+  background: rgba(242, 242, 238, 0.12);
+  border-color: rgba(242, 242, 238, 0.28);
+}
+.site-navigation.dynamic-navigation.is-hero-dark:not(.is-scrolled) .dynamic-nav-logo {
+  border-color: rgba(242, 242, 238, 0.85);
+}
+.site-navigation.dynamic-navigation.is-hero-dark:not(.is-scrolled) .dynamic-nav-logo-image {
+  filter: invert(1) grayscale(1) contrast(1.1);
+}
+
 .site-navigation.dynamic-navigation.is-scrolled {
   top: 0;
   left: 50%;

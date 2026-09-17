@@ -4121,6 +4121,152 @@ a {
   }
 }
 
+
+/* ============================================================
+   HERO / DARK EDITORIAL MODE
+   High-contrast hero treatment with integrated portrait.
+============================================================ */
+.hero-dark {
+  color: #f2f2ee;
+  background: #080808;
+  min-height: 100svh;
+}
+
+.hero-dark .hero-refined-grid {
+  opacity: 0.7;
+  background-image:
+    linear-gradient(to right, rgba(242, 242, 238, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242, 242, 238, 0.045) 1px, transparent 1px);
+  background-size: 8vw 8vw;
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 90%, transparent);
+}
+
+.hero-dark .hero-refined-orb {
+  border-color: rgba(242, 242, 238, 0.13);
+  opacity: 0.85;
+}
+
+.hero-dark .hero-refined-orb::before {
+  border-color: rgba(242, 242, 238, 0.08);
+}
+
+.hero-dark .hero-refined-orb::after {
+  background: rgba(242, 242, 238, 0.045);
+}
+
+.hero-dark .hero-solid { color: #f2f2ee; }
+.hero-dark .hero-outline { -webkit-text-stroke-color: rgba(242, 242, 238, 0.9); }
+.hero-dark .hero-line { background: rgba(242, 242, 238, 0.55); }
+.hero-dark .hero-refined-status-dot { background: #f2f2ee; }
+.hero-dark .hero-refined-scroll-circle { border-color: rgba(242, 242, 238, 0.8); }
+.hero-dark .hero-refined-scroll:hover .hero-refined-scroll-circle {
+  background: #f2f2ee;
+  color: #080808;
+}
+.hero-dark .hero-refined-status,
+.hero-dark .hero-refined-label,
+.hero-dark .hero-refined-keywords { color: #f2f2ee; }
+
+.hero-refined-portrait-wrap {
+  position: absolute;
+  right: -4vw;
+  bottom: 0;
+  width: min(62vw, 980px);
+  height: 86%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-refined-portrait {
+  position: absolute;
+  inset: -2% -1% 0 0;
+  width: 100%;
+  height: 104%;
+  object-fit: cover;
+  object-position: right center;
+  filter: grayscale(100%) contrast(1.12) brightness(0.95);
+  mix-blend-mode: screen;
+  opacity: 0.92;
+  will-change: transform;
+}
+
+.hero-refined-portrait-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #080808 0%, rgba(8,8,8,0.7) 15%, transparent 43%),
+    linear-gradient(0deg, #080808 0%, transparent 19%);
+}
+
+.hero-refined-coordinate {
+  position: absolute;
+  top: 14.5%;
+  right: 4vw;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: "DM Mono", monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.08em;
+  opacity: 0.58;
+}
+
+.hero-refined-discipline {
+  position: absolute;
+  left: 48.5%;
+  top: 43%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-left: 13px;
+  border-left: 1px solid rgba(242,242,238,0.45);
+  font-family: "DM Mono", monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.09em;
+  line-height: 1.05;
+  opacity: 0.7;
+}
+
+.hero-refined-discipline span:first-child {
+  margin-bottom: 5px;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.hero-dark .hero-refined-content { z-index: 2; }
+.hero-dark .hero-refined-bottom { z-index: 4; }
+
+@media (max-width: 1100px) {
+  .hero-refined-portrait-wrap { width: 66vw; opacity: 0.8; }
+  .hero-refined-discipline { left: 52%; }
+}
+
+@media (max-width: 700px) {
+  .hero-dark { min-height: 100svh; }
+  .hero-refined-portrait-wrap {
+    right: -35vw;
+    width: 105vw;
+    height: 62%;
+    opacity: 0.78;
+  }
+  .hero-refined-portrait-vignette {
+    background:
+      linear-gradient(180deg, #080808 0%, rgba(8,8,8,0.15) 28%, rgba(8,8,8,0.75) 78%, #080808 100%),
+      linear-gradient(90deg, #080808 0%, transparent 55%);
+  }
+  .hero-refined-coordinate { top: 12%; right: 6vw; }
+  .hero-refined-discipline { display: none; }
+  .hero-dark .hero-refined-intro-row { position: relative; z-index: 4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-refined-portrait,
+  .hero-refined-portrait-wrap { transform: none !important; }
+}
+
 /* ============================================================
    PROJECTS / DESKTOP POLISH
    Editorial hierarchy + stronger hover choreography
@@ -4415,281 +4561,293 @@ a {
   }
 }
 
-/* ============================================================
-   13 / PROJECTS — REAL CASE STUDY EXPERIENCE
-============================================================ */
-
-.project-case-study {
-  background: #e9e7e2;
-  color: #111111;
-}
-
-.case-study-hero {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  min-height: 560px;
-  border-bottom: 1px solid #111111;
-}
-
-.case-study-hero-copy {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 55px;
-}
-
-.case-study-kicker,
-.case-study-section-label,
-.case-study-summary,
-.case-study-index,
-.case-study-visual-label,
-.case-study-footer {
-  font-family: "DM Mono", monospace;
-  font-size: 0.57rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.case-study-kicker {
-  opacity: 0.48;
-}
-
-.case-study-title {
-  display: flex;
-  flex-direction: column;
-  margin: auto 0;
-  font-size: clamp(4rem, 7vw, 8.5rem);
-  line-height: 0.82;
-  letter-spacing: -0.07em;
-}
-
-.case-study-title span:nth-child(2) {
-  padding-left: 0.12em;
-}
-
-.case-study-title span:last-child {
-  color: transparent;
-  -webkit-text-stroke: 1px #111111;
-}
-
-.case-study-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
-  opacity: 0.55;
-}
-
-.case-study-hero-visual {
+/* Project image previews from Supabase Storage */
+.preview-image {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 560px;
-  padding: 45px;
-  background: #dedbd4;
   overflow: hidden;
+  padding: 0 !important;
+  background: #111 !important;
 }
 
-.case-study-hero-visual img {
+.preview-image img {
+  display: block;
   width: 100%;
   height: 100%;
-  max-height: 470px;
   object-fit: cover;
-  border: 1px solid rgba(17,17,17,0.25);
-  box-shadow: 20px 25px 60px rgba(0,0,0,0.13);
+  filter: grayscale(100%);
+  transition: transform .6s cubic-bezier(.22,1,.36,1), filter .45s ease;
 }
 
-.case-study-hero-visual .preview-window {
-  width: 100%;
-  max-width: 470px;
-  height: 320px;
-  box-shadow: 20px 25px 60px rgba(0,0,0,0.13);
+.project-row-enhanced:hover ~ .project-preview .preview-image img {
+  filter: grayscale(0%);
 }
 
-.case-study-visual-label {
+.preview-image::after {
+  content: "";
   position: absolute;
-  right: 25px;
-  bottom: 18px;
-  opacity: 0.42;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.48), transparent 45%);
+  pointer-events: none;
 }
 
-.case-study-body {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  max-width: 1180px;
-  margin: 0 auto;
+.preview-image-label {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  z-index: 2;
+  color: #fff;
+  font-family: "DM Mono", monospace;
+  font-size: 7px;
+  letter-spacing: .1em;
 }
 
-.case-study-index {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 55px 25px 55px 0;
-  opacity: 0.42;
+/* ============================================================
+   02 / EXPERIENCE — TIMELINE REFINEMENT
+   Add after the existing Experience styles.
+   Preserves the existing modal and CMS data flow.
+============================================================ */
+
+.experience-timeline {
+  position: relative;
+  isolation: isolate;
+  padding-left: 0;
 }
 
-.case-study-index span:last-child {
-  margin-top: auto;
+/* Continuous career rail */
+.experience-timeline-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 255px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.case-study-main {
-  border-left: 1px solid rgba(17,17,17,0.18);
-}
-
-.case-study-section {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 40px;
-  padding: 70px 55px;
-  border-bottom: 1px solid rgba(17,17,17,0.18);
-}
-
-.case-study-section-label {
+.experience-timeline-track-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  background: rgba(245, 245, 242, 0.72);
   opacity: 0.45;
 }
 
-.case-study-section p {
-  max-width: 680px;
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.75;
-  opacity: 0.72;
+/* Each row becomes a timeline chapter */
+.experience-timeline-item {
+  grid-template-columns: 80px 150px 36px minmax(0, 1fr) 180px;
+  min-height: 190px;
+  align-items: start;
+  z-index: 1;
 }
 
-.case-study-section .case-study-lead {
-  font-size: clamp(1.35rem, 2vw, 2rem);
+.experience-timeline-item::after {
+  content: "";
+  position: absolute;
+  left: 255px;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.experience-timeline-item:last-child::after {
+  display: none;
+}
+
+/* Timeline node */
+.experience-timeline-node {
+  position: relative;
+  width: 36px;
+  height: 100%;
+  min-height: 110px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.experience-timeline-node span {
+  position: absolute;
+  top: 5px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgba(245, 245, 242, 0.7);
+  background: #111111;
+  border-radius: 50%;
+  transform: scale(0.75);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.experience-timeline-item.is-active .experience-timeline-node span,
+.experience-timeline-item:hover .experience-timeline-node span {
+  transform: scale(1.35);
+  background: #f5f5f2;
+  box-shadow: 0 0 0 7px rgba(245, 245, 242, 0.07);
+}
+
+/* Year becomes a stronger timeline timestamp */
+.experience-timeline-item .experience-year {
+  padding-top: 1px;
+}
+
+.experience-timeline-item .experience-year span {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.experience-timeline-item .experience-year small {
+  max-width: 100px;
   line-height: 1.35;
-  letter-spacing: -0.025em;
-  opacity: 0.9;
 }
 
-.case-study-tech-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
+/* Active chapter emphasis */
+.experience-timeline-item .experience-main {
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.case-study-tech-list span {
-  padding: 11px 14px;
-  border: 1px solid rgba(17,17,17,0.25);
+.experience-timeline-item:not(.is-active) .experience-main {
+  opacity: 0.78;
+}
+
+.experience-timeline-item.is-active .experience-main {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+.experience-timeline-item .experience-main h3 {
+  transition: letter-spacing 0.35s ease;
+}
+
+.experience-timeline-item.is-active .experience-main h3 {
+  letter-spacing: -0.052em;
+}
+
+.experience-timeline-item .experience-arrow-interactive {
+  position: relative;
+  z-index: 2;
+}
+
+/* Tiny timeline hint under the header */
+.experience-header {
+  position: relative;
+}
+
+.experience-header::after {
+  content: "SCROLL THROUGH THE CHAPTERS";
+  display: block;
+  margin-top: 28px;
   font-family: "DM Mono", monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  opacity: 0.38;
 }
 
-.case-study-outcome {
-  background: #111111;
-  color: #e9e7e2;
-  border-bottom-color: #111111;
-}
-
-.case-study-outcome .case-study-section-label {
-  color: #e9e7e2;
-}
-
-.case-study-footer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 30px;
-  padding: 42px 55px 55px;
-}
-
-.case-study-footer > div:first-child {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.case-study-footer .project-modal-navigation {
-  display: inline-flex;
-}
-
-.project-github-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 16px;
-  border: 1px solid #111111;
-  color: #111111;
-  text-decoration: none;
-  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
-}
-
-.project-github-link:hover {
-  background: #111111;
-  color: #e9e7e2;
-  transform: translateY(-2px);
-}
-
-.admin-case-study-divider {
-  margin-top: 14px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(17,17,17,0.18);
-}
-
-.admin-case-study-divider p {
-  margin: 8px 0 0;
-  max-width: 620px;
-  font-size: 0.72rem;
-  line-height: 1.5;
-  opacity: 0.55;
-}
-
+/* Tablet */
 @media (max-width: 900px) {
-  .case-study-hero {
-    grid-template-columns: 1fr;
+  .experience-timeline-track {
+    left: 179px;
   }
 
-  .case-study-hero-copy,
-  .case-study-hero-visual {
-    min-height: 420px;
+  .experience-timeline-item {
+    grid-template-columns: 50px 100px 30px minmax(0, 1fr) 100px;
   }
 
-  .case-study-body {
-    grid-template-columns: 1fr;
+  .experience-timeline-item::after {
+    left: 179px;
   }
 
-  .case-study-index {
-    display: none;
-  }
-
-  .case-study-main {
-    border-left: 0;
-  }
-
-  .case-study-section {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .experience-timeline-node {
+    width: 30px;
   }
 }
 
-@media (max-width: 700px) {
-  .case-study-hero-copy {
-    padding: 35px 25px;
+/* Mobile keeps the timeline readable rather than forcing a dense desktop grid */
+@media (max-width: 650px) {
+  .experience-timeline {
+    padding-left: 18px;
   }
 
-  .case-study-hero-visual {
-    min-height: 300px;
-    padding: 25px;
+  .experience-timeline-track {
+    left: 31px;
   }
 
-  .case-study-title {
-    font-size: clamp(3.2rem, 15vw, 5.5rem);
+  .experience-timeline-item {
+    grid-template-columns: 32px 1fr;
+    gap: 16px;
+    min-height: 170px;
+    padding: 42px 0 42px 0;
   }
 
-  .case-study-section {
-    padding: 45px 25px;
+  .experience-timeline-item::after {
+    left: 31px;
   }
 
-  .case-study-footer {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 35px 25px 45px;
+  .experience-timeline-item .experience-number {
+    grid-row: 1;
+    grid-column: 1;
+    padding-top: 2px;
+    opacity: 0.55;
   }
 
-  .case-study-footer .project-modal-navigation {
-    width: 100%;
-    justify-content: space-between;
+  .experience-timeline-item .experience-year {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: baseline;
+  }
+
+  .experience-timeline-item .experience-year small {
+    max-width: none;
+  }
+
+  .experience-timeline-item .experience-timeline-node {
+    position: absolute;
+    left: -1px;
+    top: 42px;
+    width: 14px;
+    min-height: 14px;
+    height: 14px;
+  }
+
+  .experience-timeline-item .experience-timeline-node span {
+    width: 8px;
+    height: 8px;
+  }
+
+  .experience-timeline-item .experience-main {
+    grid-column: 2;
+    grid-row: 2;
+    padding-right: 30px;
+    margin-top: 12px;
+  }
+
+  .experience-timeline-item .experience-arrow {
+    position: absolute;
+    top: 42px;
+    right: 0;
+  }
+
+  .experience-timeline-item.is-active .experience-main {
+    transform: none;
+  }
+
+  .experience-header::after {
+    margin-top: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience-timeline-node span,
+  .experience-timeline-item .experience-main,
+  .experience-timeline-item .experience-main h3 {
+    transition: none;
   }
 }

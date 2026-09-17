@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
@@ -24,6 +25,8 @@ type AdminSection =
   | "capabilities"
   | "about"
   | "contact";
+
+const adminEase = [0.22, 1, 0.36, 1] as const;
 
 const navItems: { id: AdminSection; label: string; number: string }[] = [
   { id: "overview", label: "OVERVIEW", number: "00" },
@@ -79,56 +82,102 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <main className="admin-loading">
-        <span className="admin-status-dot" />
-        VERIFYING ACCESS...
+        <motion.div
+          className="admin-loading-mark"
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: adminEase }}
+        />
+        <motion.div
+          className="admin-loading-copy"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.6, ease: adminEase }}
+        >
+          <span className="admin-status-dot" />
+          VERIFYING ACCESS...
+        </motion.div>
       </main>
     );
   }
 
   return (
     <main className="admin-shell">
-      <aside className="admin-sidebar">
+      <motion.aside
+        className="admin-sidebar"
+        initial={{ x: -32, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: adminEase }}
+      >
         <div>
-          <div className="admin-sidebar-brand">
+          <motion.div
+            className="admin-sidebar-brand"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.55, ease: adminEase }}
+          >
             <a href="/" aria-label="Return to portfolio">
               AA
             </a>
             <span>ADMIN</span>
-          </div>
+          </motion.div>
 
-          <div className="admin-user">
+          <motion.div
+            className="admin-user"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28, duration: 0.55, ease: adminEase }}
+          >
             <span className="admin-user-label">SIGNED IN AS</span>
             <span className="admin-user-email">{email}</span>
-          </div>
+          </motion.div>
 
           <nav className="admin-nav" aria-label="Admin navigation">
-            {navItems.map((item) => (
-              <button
+            {navItems.map((item, index) => (
+              <motion.button
                 key={item.id}
                 className={`admin-nav-item ${
                   section === item.id ? "is-active" : ""
                 }`}
                 onClick={() => setSection(item.id)}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.34 + index * 0.055, duration: 0.45, ease: adminEase }}
               >
                 <span>{item.number}</span>
                 <strong>{item.label}</strong>
-              </button>
+              </motion.button>
             ))}
           </nav>
         </div>
 
-        <div className="admin-sidebar-bottom">
+        <motion.div
+          className="admin-sidebar-bottom"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.62, duration: 0.5, ease: adminEase }}
+        >
           <a href="/" className="admin-back-link">
             VIEW SITE <ArrowUpRight size={14} />
           </a>
           <button className="admin-logout" onClick={signOut}>
             LOG OUT <LogOut size={14} />
           </button>
-        </div>
-      </aside>
+        </motion.div>
+      </motion.aside>
 
-      <section className="admin-content">
-        <header className="admin-content-top">
+      <motion.section
+        className="admin-content"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.12, duration: 0.7, ease: adminEase }}
+      >
+        <motion.header
+          className="admin-content-top"
+          initial={{ opacity: 0, y: -18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7, ease: adminEase }}
+        >
           <div>
             <span className="admin-eyebrow">PORTFOLIO CMS / 2026</span>
             <h1>
@@ -142,8 +191,17 @@ export default function AdminDashboard() {
             <span className="admin-status-dot" />
             LIVE DATABASE
           </div>
-        </header>
+        </motion.header>
 
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={section}
+            className="admin-section-stage"
+            initial={{ opacity: 0, y: 22, filter: "blur(5px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -14, filter: "blur(3px)" }}
+            transition={{ duration: 0.55, ease: adminEase }}
+          >
         {section === "overview" ? (
           <Overview onNavigate={setSection} />
         ) : section === "projects" ? (
@@ -167,7 +225,9 @@ export default function AdminDashboard() {
             )
           )
         )}
-      </section>
+          </motion.div>
+        </AnimatePresence>
+      </motion.section>
     </main>
   );
 }
@@ -217,7 +277,12 @@ function Overview({
 
   return (
     <>
-      <div className="admin-overview-intro">
+      <motion.div
+        className="admin-overview-intro"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.08, duration: 0.6, ease: adminEase }}
+      >
         <p>
           Your portfolio is connected to Supabase. The control modules below
           will become the single source of truth for your public website.
@@ -225,17 +290,22 @@ function Overview({
         <span>
           <Settings2 size={14} /> CMS FOUNDATION READY
         </span>
-      </div>
+      </motion.div>
 
       <div className="admin-module-grid">
         {cards.map((card) => {
           const Icon = card.icon;
 
           return (
-            <button
+            <motion.button
               key={card.section}
               className="admin-module-card"
               onClick={() => onNavigate(card.section)}
+              initial={{ opacity: 0, y: 34 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16 + Number(card.number) * 0.07, duration: 0.65, ease: adminEase }}
+              whileHover={{ y: -5 }}
+              whileTap={{ scale: 0.99 }}
             >
               <div className="admin-module-card-top">
                 <span>{card.number}</span>
@@ -249,7 +319,7 @@ function Overview({
                   MANAGE <ArrowUpRight size={13} />
                 </span>
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>

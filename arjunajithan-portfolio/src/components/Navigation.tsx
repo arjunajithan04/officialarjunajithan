@@ -36,6 +36,7 @@ function Navigation() {
   const [active, setActive] = useState("hero");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const heroDark = active === "hero" && !scrolled;
 
   useEffect(() => {
     const updateNavigation = () => {
@@ -79,7 +80,7 @@ function Navigation() {
   return (
     <>
       <motion.header
-        className={`site-navigation dynamic-navigation ${scrolled ? "is-scrolled" : ""}`}
+        className={`site-navigation dynamic-navigation ${scrolled ? "is-scrolled" : ""} ${heroDark ? "is-hero-dark" : ""}`}
         animate={{ y: scrolled ? 8 : 0 }}
         transition={{ duration: 0.55, ease }}
       >

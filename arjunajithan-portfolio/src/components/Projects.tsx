@@ -17,15 +17,7 @@ interface DatabaseProject {
   project_type: string | null;
   github_url: string | null;
   image_url: string | null;
-  case_study: CaseStudy | null;
   sort_order: number;
-}
-
-interface CaseStudy {
-  role?: string;
-  challenge?: string;
-  approach?: string;
-  outcome?: string;
 }
 
 interface Project {
@@ -38,7 +30,6 @@ interface Project {
   type: "tree" | "tax" | "dule" | "generic";
   github: string;
   imageUrl: string;
-  caseStudy: CaseStudy;
 }
 
 function mapProjectType(value: string | null): Project["type"] {
@@ -101,11 +92,18 @@ function mapDatabaseProjects(rows: DatabaseProject[]): Project[] {
     type: mapProjectType(row.project_type),
     github: row.github_url ?? "",
     imageUrl: row.image_url ?? "",
-    caseStudy: row.case_study ?? {},
   }));
 }
 
-function ProjectPreview({ type }: { type: Project["type"] }) {
+function ProjectPreview({ type, imageUrl }: { type: Project["type"]; imageUrl?: string }) {
+  if (imageUrl) {
+    return (
+      <div className="preview-window preview-image">
+        <img src={imageUrl} alt="Project preview" />
+        <span className="preview-image-label">PROJECT PREVIEW</span>
+      </div>
+    );
+  }
   if (type === "tree") {
     return (
       <div className="preview-window preview-tree">
@@ -222,7 +220,7 @@ function Projects() {
       const { data, error } = await supabase
         .from("projects")
         .select(
-          "id, title, description, year, technologies, project_type, github_url, image_url, case_study, sort_order"
+          "id, title, description, year, technologies, project_type, github_url, image_url, sort_order"
         )
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: true });
@@ -289,19 +287,6 @@ function Projects() {
 
     setSelectedProject(projects[nextIndex]);
   };
-
-  useEffect(() => {
-    if (!selectedProject) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeProject();
-      if (event.key === "ArrowLeft") navigateProject(-1);
-      if (event.key === "ArrowRight") navigateProject(1);
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedProject, projects]);
 
   useEffect(() => {
     return () => {
@@ -428,7 +413,7 @@ function Projects() {
         >
           <div className="preview-label">LIVE PREVIEW</div>
 
-          {activeProject && <ProjectPreview type={activeProject.type} />}
+          {activeProject && <ProjectPreview type={activeProject.type} imageUrl={activeProject.imageUrl} />}
         </motion.div>
       </section>
 
@@ -467,95 +452,86 @@ function Projects() {
                 </button>
               </div>
 
-              <div className="project-case-study">
-                <div className="case-study-hero">
-                  <div className="case-study-hero-copy">
-                    <span className="case-study-kicker">CASE STUDY / {selectedProject.number}</span>
-                    <div className="case-study-title">
-                      {selectedProject.title.map((line, index) => (
-                        <span key={index}>{line}</span>
-                      ))}
-                    </div>
-                    <div className="case-study-summary">
-                      <span>{selectedProject.year}</span>
-                      <span>{selectedProject.type.toUpperCase()}</span>
-                      <span>{selectedProject.caseStudy.role || "PROJECT DEVELOPMENT"}</span>
-                    </div>
-                  </div>
-
-                  <div className="case-study-hero-visual">
-                    {selectedProject.imageUrl ? (
-                      <img src={selectedProject.imageUrl} alt={`${selectedProject.title.join(" ")} preview`} />
-                    ) : (
-                      <ProjectPreview type={selectedProject.type} />
-                    )}
-                    <span className="case-study-visual-label">SELECTED WORK / {selectedProject.year}</span>
-                  </div>
+              <div className="project-modal-content">
+                <div className="project-modal-preview">
+                  <ProjectPreview type={selectedProject.type} imageUrl={selectedProject.imageUrl} />
                 </div>
 
-                <div className="case-study-body">
-                  <aside className="case-study-index">
-                    <span>PROJECT / {selectedProject.number}</span>
-                    <span>ARJUN AJITHAN</span>
-                    <span>SCROLL TO EXPLORE ↓</span>
-                  </aside>
+                <div className="project-modal-details">
+                  <span className="project-modal-year">
+                    {selectedProject.year}
+                  </span>
 
-                  <div className="case-study-main">
-                    <section className="case-study-section case-study-overview">
-                      <span className="case-study-section-label">01 / OVERVIEW</span>
-                      <p className="case-study-lead">{selectedProject.description}</p>
-                    </section>
+                  <h2>
+                    {selectedProject.title.map((line, index) => (
+                      <span key={index}>{line}</span>
+                    ))}
+                  </h2>
 
-                    {selectedProject.caseStudy.challenge && (
-                      <section className="case-study-section">
-                        <span className="case-study-section-label">02 / CHALLENGE</span>
-                        <p>{selectedProject.caseStudy.challenge}</p>
-                      </section>
+                  <p>{selectedProject.description}</p>
+
+                  <div className="project-modal-tech">
+                    <span>BUILT WITH</span>
+                    <strong>{selectedProject.technologies}</strong>
+                  </div>
+
+                  <div className="project-modal-footer">
+                    <span>SELECTED WORK</span>
+
+                    <div
+                      className="project-modal-navigation"
+                      aria-label="Project navigation"
+                    >
+                      <button
+                        type="button"
+                        className="project-modal-nav-button"
+                        onClick={() => navigateProject(-1)}
+                        disabled={
+                          selectedProject.id === projects[0]?.id
+                        }
+                        aria-label="Previous project"
+                      >
+                        <ArrowLeft size={14} />
+                        PREV
+                      </button>
+
+                      <span className="project-modal-nav-count">
+                        {selectedProject.number} /{" "}
+                        {String(projects.length).padStart(2, "0")}
+                      </span>
+
+                      <button
+                        type="button"
+                        className="project-modal-nav-button"
+                        onClick={() => navigateProject(1)}
+                        disabled={
+                          selectedProject.id ===
+                          projects[projects.length - 1]?.id
+                        }
+                        aria-label="Next project"
+                      >
+                        NEXT
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
+
+                    {selectedProject.github && (
+                      <a
+                        className="project-github-link"
+                        href={selectedProject.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(event) => event.stopPropagation()}
+                        aria-label={`View ${selectedProject.title.join(
+                          " "
+                        )} on GitHub`}
+                      >
+                        VIEW ON GITHUB
+                        <ArrowUpRight size={14} />
+                      </a>
                     )}
 
-                    {selectedProject.caseStudy.approach && (
-                      <section className="case-study-section">
-                        <span className="case-study-section-label">03 / APPROACH</span>
-                        <p>{selectedProject.caseStudy.approach}</p>
-                      </section>
-                    )}
-
-                    <section className="case-study-section case-study-build">
-                      <span className="case-study-section-label">{selectedProject.caseStudy.challenge || selectedProject.caseStudy.approach ? "04" : "02"} / BUILD</span>
-                      <div className="case-study-tech-list">
-                        {selectedProject.technologies.split("·").map((technology) => technology.trim()).filter(Boolean).map((technology) => (
-                          <span key={technology}>{technology}</span>
-                        ))}
-                      </div>
-                    </section>
-
-                    {selectedProject.caseStudy.outcome && (
-                      <section className="case-study-section case-study-outcome">
-                        <span className="case-study-section-label">05 / OUTCOME</span>
-                        <p>{selectedProject.caseStudy.outcome}</p>
-                      </section>
-                    )}
-
-                    <section className="case-study-footer">
-                      <div>
-                        <span className="case-study-section-label">ARCHIVE NAVIGATION</span>
-                        <div className="project-modal-navigation" aria-label="Project navigation">
-                          <button type="button" className="project-modal-nav-button" onClick={() => navigateProject(-1)} disabled={selectedProject.id === projects[0]?.id} aria-label="Previous project">
-                            <ArrowLeft size={14} /> PREV
-                          </button>
-                          <span className="project-modal-nav-count">{selectedProject.number} / {String(projects.length).padStart(2, "0")}</span>
-                          <button type="button" className="project-modal-nav-button" onClick={() => navigateProject(1)} disabled={selectedProject.id === projects[projects.length - 1]?.id} aria-label="Next project">
-                            NEXT <ArrowRight size={14} />
-                          </button>
-                        </div>
-                      </div>
-
-                      {selectedProject.github && (
-                        <a className="project-github-link" href={selectedProject.github} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>
-                          VIEW SOURCE / GITHUB <ArrowUpRight size={14} />
-                        </a>
-                      )}
-                    </section>
+                    <span>ARJUN AJITHAN — 2026</span>
                   </div>
                 </div>
               </div>

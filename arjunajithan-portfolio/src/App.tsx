@@ -1,5 +1,4 @@
 import AdminApp from "./AdminApp";
-
 import Cursor from "./components/Cursor";
 import SmartCursor from "./components/SmartCursor";
 import ScrollProgress from "./components/ScrollProgress";
