@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { ArrowDown, ArrowUp, Check, Pencil, Plus, Save, Trash2, X } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import "./projects-manager.css";
@@ -25,7 +25,6 @@ type ProjectForm = {
   technologies: string;
   project_type: string;
   github_url: string;
-  image_url: string;
 };
 
 const emptyForm: ProjectForm = {
@@ -35,7 +34,6 @@ const emptyForm: ProjectForm = {
   technologies: "",
   project_type: "",
   github_url: "",
-  image_url: "",
 };
 
 export default function ProjectsManager() {
@@ -47,6 +45,9 @@ export default function ProjectsManager() {
   const [form, setForm] = useState<ProjectForm>(emptyForm);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [removeImage, setRemoveImage] = useState(false);
 
   const loadProjects = async () => {
     setLoading(true);
@@ -75,6 +76,9 @@ export default function ProjectsManager() {
   const openAdd = () => {
     setEditingId(null);
     setForm(emptyForm);
+    setSelectedImage(null);
+    setImagePreview("");
+    setRemoveImage(false);
     setMessage("");
     setError("");
     setFormOpen(true);
@@ -89,8 +93,10 @@ export default function ProjectsManager() {
       technologies: project.technologies ?? "",
       project_type: project.project_type ?? "",
       github_url: project.github_url ?? "",
-      image_url: project.image_url ?? "",
     });
+    setSelectedImage(null);
+    setImagePreview(project.image_url ?? "");
+    setRemoveImage(false);
     setMessage("");
     setError("");
     setFormOpen(true);
@@ -101,6 +107,76 @@ export default function ProjectsManager() {
     setFormOpen(false);
     setEditingId(null);
     setForm(emptyForm);
+    setSelectedImage(null);
+    setImagePreview("");
+    setRemoveImage(false);
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image must be 5 MB or smaller.");
+      event.target.value = "";
+      return;
+    }
+
+    setError("");
+    setSelectedImage(file);
+    setRemoveImage(false);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeSelectedImage = () => {
+    setSelectedImage(null);
+    setImagePreview("");
+    setRemoveImage(true);
+  };
+
+  const uploadProjectImage = async (projectId: string, file: File) => {
+    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const safeName = file.name
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[^a-zA-Z0-9_-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "project-image";
+    const path = `${projectId}/${Date.now()}-${safeName}.${extension}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("project-images")
+      .upload(path, file, {
+        cacheControl: "3600",
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage
+      .from("project-images")
+      .getPublicUrl(path);
+
+    return { path, publicUrl: data.publicUrl };
+  };
+
+  const deleteStoredImage = async (imageUrl: string | null) => {
+    if (!imageUrl) return;
+
+    const marker = "/storage/v1/object/public/project-images/";
+    const markerIndex = imageUrl.indexOf(marker);
+    if (markerIndex === -1) return;
+
+    const path = decodeURIComponent(imageUrl.slice(markerIndex + marker.length));
+    if (!path) return;
+
+    await supabase.storage.from("project-images").remove([path]);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -109,48 +185,113 @@ export default function ProjectsManager() {
     setMessage("");
     setError("");
 
-    const payload = {
+    const basePayload = {
       title: form.title.trim(),
       description: form.description.trim() || null,
       year: form.year.trim() ? Number(form.year) : null,
       technologies: form.technologies.trim() || null,
       project_type: form.project_type.trim() || null,
       github_url: form.github_url.trim() || null,
-      image_url: form.image_url.trim() || null,
       updated_at: new Date().toISOString(),
     };
 
-    if (!payload.title) {
+    if (!basePayload.title) {
       setError("Project title is required.");
       setSaving(false);
       return;
     }
 
-    if (payload.year !== null && !Number.isInteger(payload.year)) {
+    if (basePayload.year !== null && !Number.isInteger(basePayload.year)) {
       setError("Year must be a whole number.");
       setSaving(false);
       return;
     }
 
-    const result = editingId
-      ? await supabase.from("projects").update(payload).eq("id", editingId)
-      : await supabase.from("projects").insert({
-          ...payload,
-          sort_order: projects.length,
-        });
+    const existingProject = editingId
+      ? projects.find((project) => project.id === editingId)
+      : null;
 
-    if (result.error) {
-      setError(result.error.message);
+    let createdProjectId: string | null = null;
+
+    try {
+      let projectId = editingId;
+      let oldImageUrl = existingProject?.image_url ?? null;
+      let nextImageUrl = existingProject?.image_url ?? null;
+
+      if (selectedImage) {
+        if (!projectId) {
+          const { data, error: insertError } = await supabase
+            .from("projects")
+            .insert({ ...basePayload, image_url: null, sort_order: projects.length })
+            .select("id")
+            .single();
+
+          if (insertError || !data) {
+            throw insertError ?? new Error("Unable to create project.");
+          }
+
+          projectId = data.id;
+          createdProjectId = data.id;
+        }
+
+        const uploaded = await uploadProjectImage(projectId, selectedImage);
+        nextImageUrl = uploaded.publicUrl;
+
+        const { error: imageUpdateError } = await supabase
+          .from("projects")
+          .update({ ...basePayload, image_url: nextImageUrl })
+          .eq("id", projectId);
+
+        if (imageUpdateError) {
+          await deleteStoredImage(nextImageUrl);
+          if (!editingId) {
+            await supabase.from("projects").delete().eq("id", projectId);
+          }
+          throw imageUpdateError;
+        }
+      } else if (removeImage && editingId) {
+        const { error: removeError } = await supabase
+          .from("projects")
+          .update({ ...basePayload, image_url: null })
+          .eq("id", editingId);
+
+        if (removeError) throw removeError;
+        nextImageUrl = null;
+      } else if (editingId) {
+        const { error: updateError } = await supabase
+          .from("projects")
+          .update({ ...basePayload, image_url: nextImageUrl })
+          .eq("id", editingId);
+
+        if (updateError) throw updateError;
+      } else {
+        const { error: insertError } = await supabase
+          .from("projects")
+          .insert({ ...basePayload, image_url: null, sort_order: projects.length });
+
+        if (insertError) throw insertError;
+      }
+
+      if (oldImageUrl && oldImageUrl !== nextImageUrl) {
+        await deleteStoredImage(oldImageUrl);
+      }
+
+      setMessage(editingId ? "PROJECT UPDATED." : "PROJECT CREATED.");
+      await loadProjects();
       setSaving(false);
-      return;
+      setFormOpen(false);
+      setEditingId(null);
+      setForm(emptyForm);
+      setSelectedImage(null);
+      setImagePreview("");
+      setRemoveImage(false);
+    } catch (submitError) {
+      if (createdProjectId) {
+        await supabase.from("projects").delete().eq("id", createdProjectId);
+      }
+      setError(submitError instanceof Error ? submitError.message : "Unable to save project.");
+      setSaving(false);
     }
-
-    setMessage(editingId ? "PROJECT UPDATED." : "PROJECT CREATED.");
-    await loadProjects();
-    setSaving(false);
-    setFormOpen(false);
-    setEditingId(null);
-    setForm(emptyForm);
   };
 
   const deleteProject = async (project: Project) => {
@@ -172,6 +313,7 @@ export default function ProjectsManager() {
       return;
     }
 
+    await deleteStoredImage(project.image_url);
     setMessage("PROJECT DELETED.");
     await loadProjects();
   };
@@ -255,6 +397,7 @@ export default function ProjectsManager() {
                 </div>
                 <div className="admin-project-meta">
                   {project.year ?? "—"} {project.technologies ? `· ${project.technologies}` : ""}
+                  {project.image_url && <span className="admin-project-image-status">· IMAGE ATTACHED</span>}
                 </div>
               </div>
 
@@ -336,10 +479,32 @@ export default function ProjectsManager() {
                 <input type="url" value={form.github_url} placeholder="https://github.com/..." onChange={(e) => setForm({ ...form, github_url: e.target.value })} />
               </label>
 
-              <label>
-                <span>IMAGE URL</span>
-                <input type="url" value={form.image_url} placeholder="Optional" onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
-              </label>
+              <div className="admin-project-image-field">
+                <div className="admin-project-image-copy">
+                  <span>PROJECT IMAGE</span>
+                  <p>Choose an image from your computer. It will be uploaded to Supabase Storage and used as the project preview.</p>
+                </div>
+
+                <div className="admin-project-image-picker">
+                  {imagePreview ? (
+                    <div className="admin-project-image-preview">
+                      <img src={imagePreview} alt="Selected project preview" />
+                      <button type="button" className="admin-project-image-remove" onClick={removeSelectedImage}>
+                        <X size={13} /> REMOVE IMAGE
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="admin-project-image-empty">
+                      <span>NO IMAGE SELECTED</span>
+                    </div>
+                  )}
+
+                  <label className="admin-project-image-browse">
+                    <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={handleImageChange} />
+                    <Plus size={14} /> {imagePreview ? "CHANGE IMAGE" : "BROWSE COMPUTER"}
+                  </label>
+                </div>
+              </div>
 
               {error && <div className="admin-form-error"><X size={14} /> {error}</div>}
 

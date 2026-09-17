@@ -29,6 +29,7 @@ interface Project {
   technologies: string;
   type: "tree" | "tax" | "dule" | "generic";
   github: string;
+  imageUrl: string;
 }
 
 function mapProjectType(value: string | null): Project["type"] {
@@ -90,10 +91,19 @@ function mapDatabaseProjects(rows: DatabaseProject[]): Project[] {
     technologies: row.technologies ?? "—",
     type: mapProjectType(row.project_type),
     github: row.github_url ?? "",
+    imageUrl: row.image_url ?? "",
   }));
 }
 
-function ProjectPreview({ type }: { type: Project["type"] }) {
+function ProjectPreview({ type, imageUrl }: { type: Project["type"]; imageUrl?: string }) {
+  if (imageUrl) {
+    return (
+      <div className="preview-window preview-image">
+        <img src={imageUrl} alt="Project preview" />
+        <span className="preview-image-label">PROJECT PREVIEW</span>
+      </div>
+    );
+  }
   if (type === "tree") {
     return (
       <div className="preview-window preview-tree">
@@ -403,7 +413,7 @@ function Projects() {
         >
           <div className="preview-label">LIVE PREVIEW</div>
 
-          {activeProject && <ProjectPreview type={activeProject.type} />}
+          {activeProject && <ProjectPreview type={activeProject.type} imageUrl={activeProject.imageUrl} />}
         </motion.div>
       </section>
 
@@ -444,7 +454,7 @@ function Projects() {
 
               <div className="project-modal-content">
                 <div className="project-modal-preview">
-                  <ProjectPreview type={selectedProject.type} />
+                  <ProjectPreview type={selectedProject.type} imageUrl={selectedProject.imageUrl} />
                 </div>
 
                 <div className="project-modal-details">

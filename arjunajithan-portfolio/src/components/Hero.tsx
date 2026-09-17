@@ -108,7 +108,7 @@ function Hero() {
           </span>
         </motion.div>
 
-        {/* <motion.div
+        <motion.div
           className="hero-refined-discipline"
           initial={{ opacity: 0, x: 16 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -121,7 +121,7 @@ function Hero() {
           <span>WEB</span>
           <span>AI</span>
           <span>EXPERIMENTATION</span>
-        </motion.div> */}
+        </motion.div>
 
         <motion.div
           className="hero-title-wrapper"
@@ -161,15 +161,15 @@ function Hero() {
           </h1>
         </motion.div>
 
-        {/* <motion.div
+        <motion.div
           className="hero-line hero-refined-line"
           initial={{ scaleX: 0, transformOrigin: "left" }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: false, amount: 0.25 }}
           transition={{ duration: 1.2, delay: 1.45, ease }}
-        /> */}
+        />
 
-        {/* <motion.div
+        <motion.div
           className="hero-refined-keywords"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -180,7 +180,7 @@ function Hero() {
           <span>AI</span>
           <span>WEB</span>
           <span>EXPERIMENTATION</span>
-        </motion.div> */}
+        </motion.div>
       </div>
 
       <div className="hero-bottom hero-refined-bottom">
