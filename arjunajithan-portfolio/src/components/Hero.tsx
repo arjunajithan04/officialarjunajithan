@@ -70,8 +70,8 @@ function Hero() {
         viewport={{ once: false, amount: 0.35 }}
         transition={{ duration: 0.7, delay: 0.45, ease }}
       >
-        <span>12.9716° N</span>
-        <span>77.5946° E</span>
+        <span>13.0734484° N</span>
+        <span>77.6700073° E</span>
       </motion.div>
 
       <div className="hero-meta hero-refined-meta">
