@@ -235,7 +235,7 @@ export default function ProjectsManager() {
         }
 
         if (!projectId) {
-          throw new Error("Project ID is missing. Please save the project before uploading an image.");
+          throw new Error("Unable to determine project id for image upload.");
         }
 
         const uploaded = await uploadProjectImage(projectId, selectedImage);

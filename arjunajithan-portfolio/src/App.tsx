@@ -11,6 +11,7 @@ import Capabilities from "./components/Capabilities";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Navigation from "./components/Navigation";
+import LoadingScreenUI from "./components/LoadingScreenUI";
 
 function App() {
   //Admin route handling
@@ -24,6 +25,7 @@ function App() {
   //Main app rendering
   return (
     <SmoothScroll>
+      <LoadingScreenUI />
       <Cursor />
       <ScrollProgress />
       <SectionTransition />
