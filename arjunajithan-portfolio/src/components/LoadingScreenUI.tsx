@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./loading-screen-ui.css";
 
-const TOTAL_DURATION = 4000;
+const TOTAL_DURATION = 5500;
 const EXIT_START = 5250;
 const EXIT_DURATION = TOTAL_DURATION - EXIT_START;
 
