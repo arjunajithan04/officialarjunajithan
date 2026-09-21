@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import "./loading-screen.css";
 
-const TOTAL_DURATION = 6000;
+const TOTAL_DURATION = 4000;
 const REVEAL_AT = 5150;
 const REVEAL_DURATION = 850;
 
