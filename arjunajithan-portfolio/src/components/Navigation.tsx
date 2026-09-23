@@ -93,7 +93,7 @@ function Navigation() {
           aria-label="Back to home"
         >
           <img
-            src="/images/nav-logo.png"
+            src="/images/logo27.ico"
             alt="Arjun Ajithan"
             className="nav-logo-image"
           />
