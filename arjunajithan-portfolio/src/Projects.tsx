@@ -6,7 +6,7 @@ import {
 } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import { useEffect, useState, type MouseEvent } from "react";
-import { supabase } from "../lib/supabase";
+import { supabase } from "./lib/supabase";
 
 interface DatabaseProject {
   id: string;

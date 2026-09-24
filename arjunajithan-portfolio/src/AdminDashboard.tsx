@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   ArrowRight,
-  BriefcaseBusiness,
-  FolderKanban,
   LogOut,
   Search,
   X,
@@ -14,7 +12,6 @@ import {
   Database,
   Plus,
   RefreshCw,
-  UserRound,
   Images,
   SlidersHorizontal,
 } from "lucide-react";
