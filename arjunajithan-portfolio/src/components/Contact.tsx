@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { useSiteSettings } from "../useSiteSettings";
 
 type ContactData = {
   email: string;
@@ -22,6 +23,7 @@ const fallbackContact: ContactData = {
 const contactEase = [0.22, 1, 0.36, 1] as const;
 
 const Contact = () => {
+  const settings = useSiteSettings();
   const [contact, setContact] = useState<ContactData>(fallbackContact);
   const [copied, setCopied] = useState(false);
 
@@ -594,11 +596,11 @@ const Contact = () => {
           }}
         >
           <span>
-            © 2026 ARJUN AJITHAN NADUKANDIYIL
+            © {settings.portfolio_year} {settings.display_name.toUpperCase()}
           </span>
 
           <span>
-            BUILT WITH REACT ↗
+            {settings.footer_text}
           </span>
 
           <span>

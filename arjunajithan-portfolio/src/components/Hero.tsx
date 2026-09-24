@@ -6,12 +6,15 @@ import {
 } from "framer-motion";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";
+import { useSiteSettings } from "../useSiteSettings";
 
-const firstName = "ARJUN";
-const lastName = "AJITHAN";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 function Hero() {
+  const settings = useSiteSettings();
+  const firstName = settings.display_name.split(" ")[0].toUpperCase();
+  const lastName = settings.display_name.split(" ").slice(1).join(" ").toUpperCase();
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -81,7 +84,7 @@ function Hero() {
           viewport={{ once: false, amount: 0.35 }}
           transition={{ duration: 0.7, delay: 0.2, ease }}
         >
-          PORTFOLIO / 2026
+          PORTFOLIO / {settings.portfolio_year}
         </motion.span>
         <motion.span
           initial={{ opacity: 0, y: -15 }}
@@ -89,7 +92,7 @@ function Hero() {
           viewport={{ once: false, amount: 0.35 }}
           transition={{ duration: 0.7, delay: 0.35, ease }}
         >
-          INDIA
+          {settings.location}
         </motion.span>
       </div>
 
@@ -101,10 +104,10 @@ function Hero() {
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.8, delay: 0.45, ease }}
         >
-          <p className="hero-intro">MCA STUDENT · DEVELOPER · BUILDER</p>
+          <p className="hero-intro">{settings.tagline}</p>
           <span className="hero-refined-status hero-refined-status-desktop">
             <span className="hero-refined-status-dot" />
-            BUILDING WITH INTENT
+            {settings.status_line}
           </span>
         </motion.div>
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { ArrowDown, ArrowUp, Pencil, Plus, Save, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Pencil, Plus, Save, Search, Trash2, X } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import "./capabilities-manager.css";
 
@@ -39,6 +39,8 @@ export default function CapabilitiesManager() {
   const [editing, setEditing] = useState<CapabilityRow | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<CapabilityForm>(emptyForm);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   const load = async () => {
     setLoading(true);
@@ -205,19 +207,28 @@ export default function CapabilitiesManager() {
         </button>
       </div>
 
+      <div className="capabilities-manager-search-row">
+        <div className="capabilities-manager-search"><Search size={14} /><input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="SEARCH CAPABILITIES..." aria-label="Search capabilities" />{searchQuery && <button type="button" onClick={() => setSearchQuery("")} aria-label="Clear capability search"><X size={13} /></button>}</div>
+        <div className="capabilities-manager-filter">
+          {["all", ...Array.from(new Set(items.map((item) => item.category).filter(Boolean) as string[]))].map((category) => (
+            <button key={category} type="button" className={categoryFilter === category ? "is-active" : ""} onClick={() => setCategoryFilter(category)}>{category.toUpperCase()}</button>
+          ))}
+        </div>
+      </div>
+
       {notice && <div className="capabilities-manager-notice">{notice}</div>}
       {error && <div className="capabilities-manager-error">{error}</div>}
 
       {loading ? (
         <div className="capabilities-manager-state">LOADING CAPABILITIES...</div>
-      ) : items.length === 0 ? (
+      ) : items.filter((item) => { const query = searchQuery.trim().toLowerCase(); const haystack = [item.title, item.category, item.stack, item.description, ...(item.applications ?? [])].filter(Boolean).join(" ").toLowerCase(); return (categoryFilter === "all" || item.category === categoryFilter) && (!query || haystack.includes(query)); }).length === 0 ? (
         <div className="capabilities-manager-empty">
           <span>NO ENTRIES</span>
           <h2>BUILD THE<br />ARSENAL<span>.</span></h2>
         </div>
       ) : (
         <div className="capabilities-manager-list">
-          {items.map((item, index) => (
+          {items.filter((item) => { const query = searchQuery.trim().toLowerCase(); const haystack = [item.title, item.category, item.stack, item.description, ...(item.applications ?? [])].filter(Boolean).join(" ").toLowerCase(); return (categoryFilter === "all" || item.category === categoryFilter) && (!query || haystack.includes(query)); }).map((item, index) => (
             <article className="capabilities-manager-row" key={item.id}>
               <div className="capabilities-manager-number">
                 {String(index + 1).padStart(2, "0")}
@@ -237,16 +248,16 @@ export default function CapabilitiesManager() {
                   <button
                     type="button"
                     aria-label="Move capability up"
-                    disabled={index === 0}
-                    onClick={() => move(index, -1)}
+                    disabled={items.findIndex((entry) => entry.id === item.id) === 0}
+                    onClick={() => move(items.findIndex((entry) => entry.id === item.id), -1)}
                   >
                     <ArrowUp size={13} />
                   </button>
                   <button
                     type="button"
                     aria-label="Move capability down"
-                    disabled={index === items.length - 1}
-                    onClick={() => move(index, 1)}
+                    disabled={items.findIndex((entry) => entry.id === item.id) === items.length - 1}
+                    onClick={() => move(items.findIndex((entry) => entry.id === item.id), 1)}
                   >
                     <ArrowDown size={13} />
                   </button>

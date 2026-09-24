@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { ArrowDown, ArrowUp, Check, Pencil, Plus, Save, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, Eye, Pencil, Plus, Save, Trash2, X } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import "./projects-manager.css";
 
@@ -16,6 +16,7 @@ type Project = {
   sort_order: number;
   created_at: string;
   updated_at: string;
+  content_status: "draft" | "published" | "archived";
 };
 
 type ProjectForm = {
@@ -25,6 +26,7 @@ type ProjectForm = {
   technologies: string;
   project_type: string;
   github_url: string;
+  content_status: "draft" | "published" | "archived";
 };
 
 const emptyForm: ProjectForm = {
@@ -34,6 +36,7 @@ const emptyForm: ProjectForm = {
   technologies: "",
   project_type: "",
   github_url: "",
+  content_status: "draft",
 };
 
 export default function ProjectsManager() {
@@ -48,6 +51,8 @@ export default function ProjectsManager() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [removeImage, setRemoveImage] = useState(false);
+  const [filter, setFilter] = useState<"all" | "draft" | "published" | "archived">("all");
+  const [previewProject, setPreviewProject] = useState<Project | null>(null);
 
   const loadProjects = async () => {
     setLoading(true);
@@ -93,6 +98,7 @@ export default function ProjectsManager() {
       technologies: project.technologies ?? "",
       project_type: project.project_type ?? "",
       github_url: project.github_url ?? "",
+      content_status: project.content_status,
     });
     setSelectedImage(null);
     setImagePreview(project.image_url ?? "");
@@ -192,6 +198,7 @@ export default function ProjectsManager() {
       technologies: form.technologies.trim() || null,
       project_type: form.project_type.trim() || null,
       github_url: form.github_url.trim() || null,
+      content_status: form.content_status,
       updated_at: new Date().toISOString(),
     };
 
@@ -353,6 +360,34 @@ export default function ProjectsManager() {
     await loadProjects();
   };
 
+  const visibleProjects = filter === "all"
+    ? projects
+    : projects.filter((project) => project.content_status === filter);
+
+  const statusCounts = {
+    all: projects.length,
+    draft: projects.filter((project) => project.content_status === "draft").length,
+    published: projects.filter((project) => project.content_status === "published").length,
+    archived: projects.filter((project) => project.content_status === "archived").length,
+  };
+
+  const setProjectStatus = async (project: Project, status: Project["content_status"]) => {
+    setError("");
+    setMessage("");
+    const { error: updateError } = await supabase
+      .from("projects")
+      .update({ content_status: status, updated_at: new Date().toISOString() })
+      .eq("id", project.id);
+
+    if (updateError) {
+      setError(updateError.message);
+      return;
+    }
+
+    setMessage(status === "published" ? "PROJECT PUBLISHED." : status === "archived" ? "PROJECT ARCHIVED." : "DRAFT SAVED.");
+    await loadProjects();
+  };
+
   return (
     <div className="admin-manager">
       <div className="admin-manager-toolbar">
@@ -375,9 +410,22 @@ export default function ProjectsManager() {
         </div>
       )}
 
+      <div className="admin-content-filters" aria-label="Project status filter">
+        {(Object.keys(statusCounts) as Array<keyof typeof statusCounts>).map((status) => (
+          <button
+            key={status}
+            type="button"
+            className={filter === status ? "is-active" : ""}
+            onClick={() => setFilter(status)}
+          >
+            {status.toUpperCase()} <span>{statusCounts[status]}</span>
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <div className="admin-manager-state">LOADING PROJECTS...</div>
-      ) : projects.length === 0 ? (
+      ) : visibleProjects.length === 0 ? (
         <div className="admin-manager-empty">
           <span>NO PROJECTS YET</span>
           <h2>Start building<br />the archive<span>.</span></h2>
@@ -388,7 +436,7 @@ export default function ProjectsManager() {
         </div>
       ) : (
         <div className="admin-project-list">
-          {projects.map((project, index) => (
+          {visibleProjects.map((project, index) => (
             <article className="admin-project-row" key={project.id}>
               <div className="admin-project-number">
                 {(index + 1).toString().padStart(2, "0")}
@@ -398,6 +446,7 @@ export default function ProjectsManager() {
                 <div className="admin-project-title-line">
                   <h2>{project.title}</h2>
                   {project.project_type && <span>{project.project_type}</span>}
+                  <span className={`admin-status-badge is-${project.content_status}`}>{project.content_status.toUpperCase()}</span>
                 </div>
                 <div className="admin-project-meta">
                   {project.year ?? "—"} {project.technologies ? `· ${project.technologies}` : ""}
@@ -418,15 +467,24 @@ export default function ProjectsManager() {
                   <button
                     title="Move down"
                     aria-label={`Move ${project.title} down`}
-                    disabled={index === projects.length - 1}
+                    disabled={index === visibleProjects.length - 1}
                     onClick={() => void moveProject(index, 1)}
                   >
                     <ArrowDown size={13} />
                   </button>
                 </div>
+                <button onClick={() => setPreviewProject(project)}>
+                  <Eye size={13} /> PREVIEW
+                </button>
                 <button onClick={() => openEdit(project)}>
                   <Pencil size={13} /> EDIT
                 </button>
+                {project.content_status !== "published" && (
+                  <button onClick={() => void setProjectStatus(project, "published")}>PUBLISH</button>
+                )}
+                {project.content_status === "published" && (
+                  <button onClick={() => void setProjectStatus(project, "draft")}>UNPUBLISH</button>
+                )}
                 <button className="is-danger" onClick={() => void deleteProject(project)}>
                   <Trash2 size={13} /> DELETE
                 </button>
@@ -467,6 +525,15 @@ export default function ProjectsManager() {
                   <input value={form.project_type} placeholder="e.g. WEB / AI / MOBILE" onChange={(e) => setForm({ ...form, project_type: e.target.value })} />
                 </label>
               </div>
+
+              <label>
+                <span>CONTENT STATUS</span>
+                <select value={form.content_status} onChange={(e) => setForm({ ...form, content_status: e.target.value as ProjectForm["content_status"] })}>
+                  <option value="draft">DRAFT — NOT PUBLIC</option>
+                  <option value="published">PUBLISHED — LIVE ON SITE</option>
+                  <option value="archived">ARCHIVED — HIDDEN</option>
+                </select>
+              </label>
 
               <label>
                 <span>DESCRIPTION</span>
@@ -515,10 +582,51 @@ export default function ProjectsManager() {
               <footer className="admin-form-footer">
                 <button type="button" className="admin-secondary-button" onClick={closeForm}>CANCEL</button>
                 <button type="submit" className="admin-primary-button" disabled={saving}>
-                  <Save size={14} /> {saving ? "SAVING..." : editingId ? "SAVE CHANGES" : "SAVE PROJECT"}
+                  <Save size={14} /> {saving ? "SAVING..." : editingId ? (form.content_status === "published" ? "SAVE & PUBLISH" : "SAVE DRAFT") : (form.content_status === "published" ? "PUBLISH PROJECT" : "SAVE DRAFT")}
                 </button>
               </footer>
             </form>
+          </section>
+        </div>
+      )}
+
+      {previewProject && (
+        <div className="admin-form-overlay" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setPreviewProject(null);
+        }}>
+          <section className="admin-preview-panel" role="dialog" aria-modal="true" aria-labelledby="project-preview-title">
+            <header className="admin-form-header">
+              <div>
+                <span className="admin-eyebrow">PROJECT PREVIEW / {previewProject.content_status.toUpperCase()}</span>
+                <h2 id="project-preview-title">{previewProject.title}</h2>
+              </div>
+              <button className="admin-icon-button" onClick={() => setPreviewProject(null)} aria-label="Close project preview">
+                <X size={18} />
+              </button>
+            </header>
+
+            {previewProject.image_url && (
+              <div className="admin-preview-image"><img src={previewProject.image_url} alt={previewProject.title} /></div>
+            )}
+
+            <div className="admin-preview-copy">
+              <div className="admin-preview-meta">
+                <span>{previewProject.year ?? "—"}</span>
+                <span>{previewProject.project_type ?? "PROJECT"}</span>
+                <span>{previewProject.technologies ?? "—"}</span>
+              </div>
+              <p>{previewProject.description || "No project description yet."}</p>
+              {previewProject.github_url && (
+                <a href={previewProject.github_url} target="_blank" rel="noreferrer">VIEW GITHUB ↗</a>
+              )}
+            </div>
+
+            <footer className="admin-form-footer">
+              <button type="button" className="admin-secondary-button" onClick={() => setPreviewProject(null)}>CLOSE</button>
+              {previewProject.content_status !== "published" && (
+                <button type="button" className="admin-primary-button" onClick={() => { void setProjectStatus(previewProject, "published"); setPreviewProject(null); }}>PUBLISH PROJECT</button>
+              )}
+            </footer>
           </section>
         </div>
       )}

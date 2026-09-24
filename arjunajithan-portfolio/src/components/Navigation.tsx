@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import "./navigation-dynamic.css";
+import { useSiteSettings } from "../useSiteSettings";
 
 type NavItem = {
   number: string;
@@ -33,6 +34,7 @@ function getActiveSection(): string {
 }
 
 function Navigation() {
+  const settings = useSiteSettings();
   const [active, setActive] = useState("hero");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -164,7 +166,7 @@ function Navigation() {
             transition={{ duration: 0.65, ease }}
           >
             <div className="mobile-navigation-inner dynamic-mobile-inner">
-              <div className="mobile-nav-label">ARJUN AJITHAN / PORTFOLIO 2026</div>
+              <div className="mobile-nav-label">{settings.site_name} / PORTFOLIO {settings.portfolio_year}</div>
 
               <div className="mobile-nav-links">
                 {navItems.map((item, index) => (
@@ -184,8 +186,8 @@ function Navigation() {
               </div>
 
               <div className="mobile-nav-footer">
-                <span>BUILDING WITH INTENT</span>
-                <span>INDIA · 2026</span>
+                <span>{settings.status_line}</span>
+                <span>{settings.location} · {settings.portfolio_year}</span>
               </div>
             </div>
           </motion.div>

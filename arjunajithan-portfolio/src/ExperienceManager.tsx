@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { ArrowDown, ArrowUp, Pencil, Plus, Save, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Pencil, Plus, Save, Search, Trash2, X } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import "./experience-manager.css";
 
@@ -64,6 +64,8 @@ export default function ExperienceManager() {
   const [editing, setEditing] = useState<ExperienceRow | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<ExperienceForm>(emptyForm);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [experienceFilter, setExperienceFilter] = useState<"all" | "current" | "past">("all");
 
   const load = async () => {
     setLoading(true);
@@ -232,19 +234,39 @@ export default function ExperienceManager() {
         </button>
       </div>
 
+      <div className="experience-manager-search-row">
+        <div className="experience-manager-search">
+          <Search size={14} />
+          <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="SEARCH EXPERIENCE..." aria-label="Search experience" />
+          {searchQuery && <button type="button" onClick={() => setSearchQuery("")} aria-label="Clear experience search"><X size={13} /></button>}
+        </div>
+        <div className="experience-manager-filter">
+          {(["all", "current", "past"] as const).map((filter) => (
+            <button key={filter} type="button" className={experienceFilter === filter ? "is-active" : ""} onClick={() => setExperienceFilter(filter)}>
+              {filter.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {notice && <div className="experience-manager-notice">{notice}</div>}
       {error && <div className="experience-manager-error">{error}</div>}
 
       {loading ? (
         <div className="experience-manager-state">LOADING EXPERIENCE...</div>
-      ) : items.length === 0 ? (
+      ) : items.filter((item) => {
+        const query = searchQuery.trim().toLowerCase();
+        const matchesFilter = experienceFilter === "all" || (experienceFilter === "current" ? item.is_current : !item.is_current);
+        const haystack = [item.company, item.role, item.location, item.summary, item.description, ...(item.tags ?? [])].filter(Boolean).join(" ").toLowerCase();
+        return matchesFilter && (!query || haystack.includes(query));
+      }).length === 0 ? (
         <div className="experience-manager-empty">
           <span>NO ENTRIES</span>
           <h2>BUILD THE<br />TIMELINE<span>.</span></h2>
         </div>
       ) : (
         <div className="experience-manager-list">
-          {items.map((item, index) => (
+          {items.filter((item) => { const query = searchQuery.trim().toLowerCase(); const matchesFilter = experienceFilter === "all" || (experienceFilter === "current" ? item.is_current : !item.is_current); const haystack = [item.company, item.role, item.location, item.summary, item.description, ...(item.tags ?? [])].filter(Boolean).join(" ").toLowerCase(); return matchesFilter && (!query || haystack.includes(query)); }).map((item, index) => (
             <article className="experience-manager-row" key={item.id}>
               <div className="experience-manager-number">
                 {String(index + 1).padStart(2, "0")}
@@ -263,15 +285,15 @@ export default function ExperienceManager() {
                 <div className="experience-manager-order">
                   <button
                     aria-label="Move experience up"
-                    disabled={index === 0}
-                    onClick={() => move(index, -1)}
+                    disabled={items.findIndex((entry) => entry.id === item.id) === 0}
+                    onClick={() => move(items.findIndex((entry) => entry.id === item.id), -1)}
                   >
                     <ArrowUp size={13} />
                   </button>
                   <button
                     aria-label="Move experience down"
-                    disabled={index === items.length - 1}
-                    onClick={() => move(index, 1)}
+                    disabled={items.findIndex((entry) => entry.id === item.id) === items.length - 1}
+                    onClick={() => move(items.findIndex((entry) => entry.id === item.id), 1)}
                   >
                     <ArrowDown size={13} />
                   </button>

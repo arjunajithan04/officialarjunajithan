@@ -18,6 +18,7 @@ interface DatabaseProject {
   github_url: string | null;
   image_url: string | null;
   sort_order: number;
+  content_status: "draft" | "published" | "archived";
 }
 
 interface Project {
@@ -220,8 +221,9 @@ function Projects() {
       const { data, error } = await supabase
         .from("projects")
         .select(
-          "id, title, description, year, technologies, project_type, github_url, image_url, sort_order"
+          "id, title, description, year, technologies, project_type, github_url, image_url, sort_order, content_status"
         )
+        .eq("content_status", "published")
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: true });
 

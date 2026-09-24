@@ -369,3 +369,12 @@
     grid-template-columns:1fr;
   }
 }
+
+.capabilities-manager-search-row { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:18px 0 0; flex-wrap:wrap; }
+.capabilities-manager-search { width:min(520px,100%); min-height:42px; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; padding:0 13px; border:1px solid rgba(17,17,17,.16); }
+.capabilities-manager-search svg { opacity:.45; }
+.capabilities-manager-search input { width:100%; border:0; outline:0; background:transparent; color:#111; font:8px/1 "DM Mono",monospace; letter-spacing:.08em; }
+.capabilities-manager-search button { display:grid; place-items:center; border:0; background:transparent; color:#111; cursor:pointer; }
+.capabilities-manager-filter { display:flex; flex-wrap:wrap; gap:6px; }
+.capabilities-manager-filter button { min-height:30px; padding:0 9px; border:1px solid rgba(17,17,17,.14); background:transparent; color:#111; font:7px/1 "DM Mono",monospace; letter-spacing:.08em; cursor:pointer; }
+.capabilities-manager-filter button.is-active { background:#111; color:#f2f2ee; }

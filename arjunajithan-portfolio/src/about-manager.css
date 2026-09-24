@@ -353,3 +353,9 @@
   }
 }
 
+
+.about-manager-search-row { padding:18px 0 0; }
+.about-manager-search { width:min(520px,100%); min-height:42px; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; padding:0 13px; border:1px solid rgba(17,17,17,.16); }
+.about-manager-search svg { opacity:.45; }
+.about-manager-search input { width:100%; border:0; outline:0; background:transparent; color:#111; font:8px/1 "DM Mono",monospace; letter-spacing:.08em; }
+.about-manager-search button { display:grid; place-items:center; border:0; background:transparent; color:#111; cursor:pointer; }

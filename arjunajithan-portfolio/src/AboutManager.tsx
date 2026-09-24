@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { Pencil, Plus, Save, Trash2, ArrowUp, ArrowDown, X } from "lucide-react";
+import { Pencil, Plus, Save, Search, Trash2, ArrowUp, ArrowDown, X } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import "./about-manager.css";
 
@@ -52,6 +52,7 @@ export default function AboutManager() {
     useState<PerspectiveRow | null>(null);
   const [aboutForm, setAboutForm] = useState(emptyAbout);
   const [perspectiveForm, setPerspectiveForm] = useState(emptyPerspective);
+  const [perspectiveSearch, setPerspectiveSearch] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -270,6 +271,10 @@ export default function AboutManager() {
         </div>
       </div>
 
+      <div className="about-manager-search-row">
+        <div className="about-manager-search"><Search size={14} /><input value={perspectiveSearch} onChange={(event) => setPerspectiveSearch(event.target.value)} placeholder="SEARCH PERSPECTIVES..." aria-label="Search perspectives" />{perspectiveSearch && <button type="button" onClick={() => setPerspectiveSearch("")} aria-label="Clear perspective search"><X size={13} /></button>}</div>
+      </div>
+
       <div className="about-manager-section-head">
         <div>
           <span>HOW I WORK</span>
@@ -281,7 +286,7 @@ export default function AboutManager() {
       </div>
 
       <div className="about-manager-list">
-        {perspectives.map((item, index) => (
+        {perspectives.filter((item) => { const query = perspectiveSearch.trim().toLowerCase(); return !query || [item.label, item.title, item.text].filter(Boolean).join(" ").toLowerCase().includes(query); }).map((item, index) => (
           <article className="about-manager-row" key={item.id}>
             <div className="about-manager-number">
               {String(index + 1).padStart(2, "0")}
@@ -295,12 +300,12 @@ export default function AboutManager() {
             </div>
             <div className="about-manager-actions">
               <div>
-                <button disabled={index === 0} onClick={() => movePerspective(index, -1)}>
+                <button disabled={perspectives.findIndex((entry) => entry.id === item.id) === 0} onClick={() => movePerspective(perspectives.findIndex((entry) => entry.id === item.id), -1)}>
                   <ArrowUp size={13} />
                 </button>
                 <button
-                  disabled={index === perspectives.length - 1}
-                  onClick={() => movePerspective(index, 1)}
+                  disabled={perspectives.findIndex((entry) => entry.id === item.id) === perspectives.length - 1}
+                  onClick={() => movePerspective(perspectives.findIndex((entry) => entry.id === item.id), 1)}
                 >
                   <ArrowDown size={13} />
                 </button>

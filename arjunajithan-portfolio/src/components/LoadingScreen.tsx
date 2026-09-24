@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import "./loading-screen.css";
+import { useSiteSettings } from "../useSiteSettings";
 
 const TOTAL_DURATION = 4000;
 const REVEAL_AT = 5150;
@@ -17,6 +18,7 @@ const stages = [
 const disciplines = ["SOFTWARE", "WEB", "AI", "EXPERIMENTATION"];
 
 function LoadingScreen() {
+  const settings = useSiteSettings();
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState(stages[0]);
   const [disciplineIndex, setDisciplineIndex] = useState(0);
@@ -103,14 +105,14 @@ function LoadingScreen() {
           <div className="loader-top-status">
             <div className="loader-status-group">
               <span className="loader-live-dot" />
-              <span>ARJUN.OS / INITIALIZING</span>
+              <span>{settings.site_name}.OS / INITIALIZING</span>
             </div>
-            <span className="loader-location">INDIA / 2026</span>
+            <span className="loader-location">{settings.location} / {settings.portfolio_year}</span>
           </div>
 
           <div className="loader-top-meta">
-            <span>MCA STUDENT&nbsp;&nbsp;·&nbsp;&nbsp;DEVELOPER&nbsp;&nbsp;·&nbsp;&nbsp;BUILDER</span>
-            <span className="loader-meta-secondary">BUILDING WITH INTENT</span>
+            <span>{settings.tagline.split(" · ").map((part, index) => <span key={part}>{index > 0 && " · "}{part}</span>)}</span>
+            <span className="loader-meta-secondary">{settings.status_line}</span>
           </div>
         </div>
       </motion.div>
@@ -156,7 +158,7 @@ function LoadingScreen() {
             <div className="loader-footer-meta">
               <span>FLOW / 04 STAGES</span>
               <span>IDEAS / CODE / IMPACT</span>
-              <span>PORTFOLIO / 2026</span>
+              <span>PORTFOLIO / {settings.portfolio_year}</span>
             </div>
           </div>
         </div>
