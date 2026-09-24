@@ -199,9 +199,6 @@ export default function ContentIntelligenceManager() {
     <div className="content-intelligence">
       <header className="ci-header">
         <div>
-          <span className="ci-kicker">PORTFOLIO CMS / 2026</span>
-          <h1>Intelligence<span>.</span></h1>
-          <div className="ci-breadcrumb">CMS / INTELLIGENCE</div>
           <p>A content-health layer for spotting incomplete portfolio entries before they reach the public site.</p>
         </div>
         <div className="ci-header-side">
