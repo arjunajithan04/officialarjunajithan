@@ -115,9 +115,9 @@ export default function AdminLogin() {
         </motion.div>
 
         <h1>
-          <span className="admin-title-line">Welcome</span>
+          <span className="admin-title-line">Welcome,</span>
           <br />
-          <span className="admin-title-line admin-title-line-delay">back<span>.</span></span>
+          <span className="admin-title-line admin-title-line-delay">Admin<span>.</span></span>
         </h1>
 
         <motion.p
