@@ -8,13 +8,13 @@ DEVELOPER · BUILDER · MCA STUDENT
 
 <br/>
 
-<a href="YOUR_PORTFOLIO_URL">
+<a href="https://arjunajithan-portfolio.vercel.app">
   <img src="https://img.shields.io/badge/EXPLORE%20PORTFOLIO-111111?style=for-the-badge" />
 </a>
 <a href="https://github.com/arjunajithan04">
   <img src="https://img.shields.io/badge/GITHUB-111111?style=for-the-badge&logo=github&logoColor=white" />
 </a>
-<a href="YOUR_LINKEDIN_URL">
+<a href="https://linkedin.com/in/arjunajithan">
   <img src="https://img.shields.io/badge/LINKEDIN-111111?style=for-the-badge&logo=linkedin&logoColor=white" />
 </a>
 
