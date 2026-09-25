@@ -1,223 +1,105 @@
 <div align="center">
 
-ARJUN AJITHAN
+# ✦ ARJUN AJITHAN
 
-DEVELOPER · BUILDER · MCA STUDENT
+### `ENGINEERING EXPERIENCES AT THE INTERSECTION OF CODE & MOTION`
 
-<img src="https://readme-typing-svg.demolab.com?font=Space+Mono&size=20&duration=2800&pause=800&color=FFFFFF&center=true&vCenter=true&width=700&lines=Building+digital+experiences.;Turning+ideas+into+working+products.;Exploring+Web%2C+AI+%26+Emerging+Technology.;Designing+things+that+feel+alive." alt="Typing animation"/>
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Space+Mono&weight=500&size=16&duration=2500&pause=1000&color=E0E0E0&center=true&vCenter=true&width=750&lines=Full-Stack+Engineering+%C2%B7+Fluid+Motion+%C2%B7+Design+Systems;Building+living+interfaces+backed+by+robust+architectures;Bridging+Web%2C+AI%2C+and+human-centric+interaction." alt="Typing Animation" />
+</p>
+
+[![Portfolio](https://img.shields.io/badge/LIVE_PREVIEW-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://arjunajithan-portfolio.vercel.app)
+[![LinkedIn](https://img.shields.io/badge/CONNECT-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/arjunajithan)
+[![GitHub](https://img.shields.io/badge/SOURCE_CODE-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/arjunajithan04)
+
+---
+
+</div>
+
+## `01 // ARCHITECTURE & VISION`
+
+> *"The goal isn't merely to animate everything—it's to make every micro-interaction feel deliberate, tactile, and alive."*
+
+This repository houses my personal portfolio and content engine. Rather than serving as a static landing page, the project functions as an **interactive experimental sandbox** paired with a custom decoupled Content Management System (CMS), built to ensure continuous evolution without source redeployment.
+
+```
+       [ CLIENT APPLICATION ]                [ DATA RUNTIME ]
+  React · Framer Motion · TypeScript          Supabase (PostgreSQL)
+                │                                      │
+                ▼                                      ▼
+    ┌────────────────────────┐             ┌────────────────────────┐
+    │ Dynamic Design System  │ ◄────────── │  Headless CMS Engine   │
+    │ · Magnetic Micro-Inter │             │  · Revision Tracking   │
+    │ · Cinematic Typography │             │  · Schema Health Check │
+    │ · Replayable Canvases  │             │  · Asset Pipeline      │
+    └────────────────────────┘             └────────────────────────┘
+```
+
+---
+
+## `02 // SYSTEM CAPABILITIES`
+
+| Dimension | Architectural Feature | Implementation Details |
+| :--- | :--- | :--- |
+| **Motion Engine** | Physics-based interactions | Custom cursor tracking, magnetic snapping states, and scroll-linked timeline sequences via Framer Motion. |
+| **Decoupled CMS** | Supabase data orchestration | Real-time draft/publish workflows, role-based controls, activity telemetry, and media optimization. |
+| **Content Intelligence** | Heuristic health engine | Built-in inspection scripts measuring metadata density, asset resolutions, and copy completeness. |
+| **Design System** | Monochromatic minimalism | Token-driven CSS architecture prioritizing scannability, dynamic type scales, and high contrast. |
+
+---
+
+## `03 // CONTENT HEALTH MATRIX`
+
+```
+CORE METADATA     [████████████████████] 100% — ACTIVE
+PROJECT SHOWCASES [████████████████░░░░]  80% — SYNCHRONIZED
+EXPERIENCE LOGS   [████████████████████] 100% — VALIDATED
+MEDIA COMPRESSION [██████████████░░░░░░]  70% — OPTIMIZED
+```
+*System telemetry automatically audits data integrity before deploying to public edge cache.*
+
+---
+
+## `04 // TECH STACK`
+
+<div align="center">
+
+| Domain | Technologies |
+| :--- | :--- |
+| **Frontend Core** | `React` `TypeScript` `Vite` `Tailwind CSS` `Framer Motion` |
+| **Backend & Data** | `Supabase` `PostgreSQL` `REST / Edge Functions` `Python` |
+| **Tooling & Cloud** | `GCP` `Git` `GitHub Actions` `Vercel` `VS Code` |
 
 <br/>
 
+<img src="https://skillicons.dev/icons?i=react,ts,vite,tailwind,framer,supabase,postgres,python,java,gcp,git,github&perline=12" alt="Tech Stack Icons" />
+
+</div>
+
+---
+
+## `05 // CORE PRINCIPLES`
+
+- **01. Less, But Better** — Eliminate UI friction; design elements only exist if they inform or direct.
+- **02. Purpose-Driven Motion** — Fluid transitions should preserve user spatial orientation, not act as decorative noise.
+- **03. Typography as Interface** — Strict spatial hierarchy and weight distribution supersede unnecessary container wrappers.
+- **04. Separation of Concerns** — Code handles delivery; decoupled schema pipelines dictate experience.
+
+---
+
+<div align="center">
+
+### `BUILD · BREAK · UNDERSTAND · ITERATE`
+
 <a href="https://arjunajithan-portfolio.vercel.app">
-  <img src="https://img.shields.io/badge/EXPLORE%20PORTFOLIO-111111?style=for-the-badge" />
-</a>
-<a href="https://github.com/arjunajithan04">
-  <img src="https://img.shields.io/badge/GITHUB-111111?style=for-the-badge&logo=github&logoColor=white" />
-</a>
-<a href="https://linkedin.com/in/arjunajithan">
-  <img src="https://img.shields.io/badge/LINKEDIN-111111?style=for-the-badge&logo=linkedin&logoColor=white" />
+  <img src="https://img.shields.io/badge/LAUNCH_PORTFOLIO_SYSTEM-000000?style=for-the-badge&labelColor=222222&color=FFFFFF" alt="Launch Portfolio"/>
 </a>
 
 <br/><br/>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:111111,100:333333&height=120&section=header" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1a1a1a,50:0a0a0a,100:000000&height=100&section=footer" width="100%"/>
 
-</div>
-
-01 / WHO AM I?
-
-I like to build things that matter.
-
-I'm an MCA student and developer interested in creating digital experiences
-where code, design, motion, and emerging technology meet.
-
-This repository is my personal portfolio — but it's also an experiment in
-building a portfolio that feels alive.
-
-WEB       →       AI       →       DESIGN
-  ╲                 │                 ╱
-   ╲                │                ╱
-    └────────── EXPERIENCES ─────────┘
-
-02 / THE PORTFOLIO
-
-<table>
-<tr>
-<td width="50%">
-
-✦ EXPERIENCE
-
-Motion-driven sections built around:
-
-Cinematic typography
-
-Scroll interactions
-
-Magnetic elements
-
-Custom cursor
-
-Replayable animations
-
-</td>
-
-<td width="50%">
-
-✦ PROJECTS
-
-Interactive project showcase featuring:
-
-Project previews
-
-Technology breakdowns
-
-GitHub repositories
-
-Dynamic content
-
-Animated dialogs
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-✦ CAPABILITIES
-
-An interactive exploration of the technologies,
-tools, and areas I'm working with.
-
-</td>
-
-<td>
-
-✦ ABOUT
-
-A more personal section combining
-background, interests, visuals, and interaction.
-
-</td>
-</tr>
-</table>
-
-03 / BUILT DIFFERENT
-
-This isn't just a static portfolio.
-
-It's backed by a custom Supabase-powered CMS that lets the entire
-experience evolve without constantly touching the source code.
-
-                    ┌──────────────┐
-                    │     CMS      │
-                    └──────┬───────┘
-                           │
-          ┌────────────────┼────────────────┐
-          ▼                ▼                ▼
-       CONTENT           MEDIA           SETTINGS
-          │                │                │
-          └────────────────┼────────────────┘
-                           ▼
-                       SUPABASE
-                           │
-                           ▼
-                   PUBLIC PORTFOLIO
-
-CMS includes
-
-DASHBOARD · DRAFT / PUBLISH · SEARCH · MEDIA LIBRARY
-
-ACTIVITY LOG · REVISION HISTORY · SITE SETTINGS · CONTENT INTELLIGENCE
-
-04 / CONTENT INTELLIGENCE
-
-The CMS can automatically inspect portfolio content and surface
-missing or incomplete information.
-
-<div align="center">
-
-CONTENT HEALTH
-
-████████████████████░░░░
-
-COMPLETENESS • NOT SUBJECTIVE QUALITY
-
-</div>
-
-05 / STACK
-
-<div align="center">
-
-<img src="https://skillicons.dev/icons?i=react,typescript,vite,html,css,js,framer,supabase,python,java,c,git,github,vscode,gcp" />
-
-</div>
-
-06 / INTERACTION
-
-CUSTOM CURSOR
-      ↓
-MAGNETIC ELEMENTS
-      ↓
-HOVER STATES
-      ↓
-SCROLL MOTION
-      ↓
-PROJECT PREVIEWS
-      ↓
-REPLAYABLE EXPERIENCES
-
-The goal isn't to animate everything.
-
-The goal is to make interaction feel intentional.
-
-07 / DESIGN PRINCIPLES
-
-
-
-
-
-01
-
-LESS, BUT BETTER
-
-02
-
-MOTION WITH PURPOSE
-
-03
-
-TYPOGRAPHY IS INTERFACE
-
-04
-
-CONTENT FIRST
-
-05
-
-BUILD FOR CHANGE
-
-<div align="center">
-
-BUILD · EXPERIMENT · ITERATE
-
-<br/>
-
-Build it. Break it. Understand it.
-
-Then build it better.
-
-<br/>
-
-<a href="https://arjunajithan-portfolio.vercel.app">
-  <img src="https://img.shields.io/badge/ENTER%20THE%20PORTFOLIO-FFFFFF?style=for-the-badge&labelColor=111111" />
-</a>
-
-<br/><br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:333333,100:111111&height=100&section=footer" width="100%"/>
-
-ARJUN AJITHAN
-
-DEVELOPER · BUILDER · MCA STUDENT
+**ARJUN AJITHAN**  
+*Developer · Builder*
 
 </div>
